@@ -1,0 +1,6 @@
+{
+  "name": "Engineering Officer BY SP",
+  "description": "Premier Civil Engineering competitive examination preparation platform for Diploma & Degree Civil aspirants preparing for ESE/IES, SSC JE, RRB JE, MPSC Civil, Maha PWD, WRD, ZP, and Municipal Engineering recruitments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
