@@ -311,6 +311,82 @@ export const AdminSupabaseConnector: React.FC = () => {
             </button>
           </div>
         </form>
+
+        {/* 24/7 Anti-Pause Multi-Layer Architecture Card */}
+        <div className="p-5 rounded-xl border border-emerald-200 bg-linear-to-br from-emerald-50/60 to-white space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
+                <Shield className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span>Supabase 24/7 Anti-Pause Protection (कधीही बंद न पडणारी प्रणाली)</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800">
+                    3 LAYERS ACTIVE
+                  </span>
+                </h4>
+                <p className="text-xs text-slate-600">
+                  ॲप कोणी वापरले किंवा नाही वापरले तरीही Supabase फ्री डेटाबेस कधीही स्लीप किंवा पॉज होत नाही.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+            {/* Layer 1 */}
+            <div className="p-3.5 rounded-lg border border-emerald-200 bg-white shadow-2xs space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-extrabold text-emerald-800 uppercase flex items-center gap-1.5">
+                  <Server className="w-3.5 h-3.5 text-emerald-600" />
+                  Layer 1: Server Daemon
+                </span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              </div>
+              <p className="text-xs font-bold text-slate-900">दर ३ तासांनी स्वयंचलित पिंग</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                बॅकएंड सर्व्हर बूट होताच व दर ३ तासांनी थेट Supabase ला क्वेरी करतो, ज्यामुळे Supabase कडून प्रोजेक्ट सतत सक्रिय मानला जातो.
+              </p>
+            </div>
+
+            {/* Layer 2 */}
+            <div className="p-3.5 rounded-lg border border-sky-200 bg-white shadow-2xs space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-extrabold text-sky-800 uppercase flex items-center gap-1.5">
+                  <Terminal className="w-3.5 h-3.5 text-sky-600" />
+                  Layer 2: GitHub Actions Cron
+                </span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-sky-100 text-sky-700">
+                  Cloud Runner
+                </span>
+              </div>
+              <p className="text-xs font-bold text-slate-900">GitHub द्वारे दर ६ तासांनी पिंग</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                प्रोजेक्ट GitHub वर असल्याने <code className="text-sky-700">.github/workflows/supabase-keepalive.yml</code> सर्व्हर बंद असला तरीही बाहेरून Supabase ला जागृत ठेवतो.
+              </p>
+            </div>
+
+            {/* Layer 3 */}
+            <div className="p-3.5 rounded-lg border border-purple-200 bg-white shadow-2xs space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-extrabold text-purple-800 uppercase flex items-center gap-1.5">
+                  <ExternalLink className="w-3.5 h-3.5 text-purple-600" />
+                  Layer 3: Public Webhook
+                </span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-100 text-purple-700">
+                  Uptime Monitor
+                </span>
+              </div>
+              <p className="text-xs font-bold text-slate-900">External Free Cron Endpoint</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed font-mono truncate">
+                GET /api/supabase/keepalive
+              </p>
+              <p className="text-[10px] text-slate-500">
+                cron-job.org किंवा UptimeRobot मोफत जोडून 100% बॅकअप पिंग सुनिश्चित करू शकता.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

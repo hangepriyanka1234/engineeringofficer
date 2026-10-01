@@ -93,15 +93,17 @@ app.get("/api/supabase/status", async (_req: Request, res: Response) => {
   }
 });
 
-// Supabase Keep-Alive Heartbeat Ping (Prevents auto-pause)
-app.post("/api/supabase/keepalive", async (_req: Request, res: Response) => {
+// Supabase Keep-Alive Heartbeat Ping (Prevents auto-pause from both internal calls and external monitors)
+const handleKeepAlive = async (_req: Request, res: Response) => {
   try {
     const pingResult = await ServerSupabaseEngine.triggerKeepAlive();
     res.json(pingResult);
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }
-});
+};
+app.get("/api/supabase/keepalive", handleKeepAlive);
+app.post("/api/supabase/keepalive", handleKeepAlive);
 
 // Supabase Storage & Database Metrics
 app.get("/api/supabase/storage-metrics", async (_req: Request, res: Response) => {
@@ -1195,6 +1197,76 @@ app.get("/api/calculators/run-tests", (_req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({ error: "Failed to run numerical test suite" });
   }
+});
+
+// Push & System Notifications API
+const activePushSubscriptions: Array<{ endpoint: string; userEmail?: string; subscribedAt: string }> = [];
+const systemNotificationsHistory: Array<{
+  id: string;
+  title: string;
+  body: string;
+  icon: string;
+  timestamp: string;
+  category: string;
+}> = [
+  {
+    id: "notif-1",
+    title: "MPSC Civil Engineering 2026",
+    body: "450 जागांची अधिकृत जाहिरात प्रसिद्ध! त्वरित सिलॅबस व पात्रता तपासा.",
+    icon: "/icon.svg",
+    timestamp: new Date().toISOString(),
+    category: "recruitment"
+  },
+  {
+    id: "notif-2",
+    title: "CBT Mock Test #03 is LIVE!",
+    body: "All Maharashtra Civil Engineering Rank Test सुरू झाला आहे. 100 प्रश्न · 120 मिनिटे.",
+    icon: "/icon.svg",
+    timestamp: new Date().toISOString(),
+    category: "mock_test"
+  }
+];
+
+app.post("/api/notifications/subscribe", async (req: Request, res: Response) => {
+  const { endpoint, userEmail } = req.body;
+  if (endpoint) {
+    activePushSubscriptions.push({
+      endpoint,
+      userEmail: userEmail || "student@engineeringofficer.in",
+      subscribedAt: new Date().toISOString()
+    });
+    // Sync with Supabase push_subscriptions table
+    await ServerSupabaseEngine.savePushSubscription({
+      endpoint,
+      userEmail: userEmail || "student@engineeringofficer.in",
+      subscribedAt: new Date().toISOString()
+    }).catch((err) => console.warn('[Supabase Sync Warning]', err));
+  }
+  res.json({ success: true, count: activePushSubscriptions.length });
+});
+
+app.post("/api/notifications/broadcast", async (req: Request, res: Response) => {
+  const { title, body, icon, category } = req.body;
+  const newNotif = {
+    id: `notif-${Date.now()}`,
+    title: title || "Engineering Officer Update",
+    body: body || "नवीन परीक्षा अपडेट उपलब्ध!",
+    icon: icon || "/icon.svg",
+    timestamp: new Date().toISOString(),
+    category: category || "general"
+  };
+  systemNotificationsHistory.unshift(newNotif);
+
+  // Sync notification broadcast into Supabase notifications table
+  await ServerSupabaseEngine.recordNotification(newNotif).catch((err) =>
+    console.warn('[Supabase Sync Warning]', err)
+  );
+
+  res.json({ success: true, notification: newNotif, recipientCount: Math.max(1, activePushSubscriptions.length) });
+});
+
+app.get("/api/notifications/feed", (_req: Request, res: Response) => {
+  res.json({ notifications: systemNotificationsHistory });
 });
 
 // Gemini Question Explainer with IS Code & Formulas

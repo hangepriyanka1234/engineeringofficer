@@ -12,6 +12,7 @@ import {
 } from './types';
 import { StorageService } from './services/storageService';
 import { mockTestService } from './services/mockTestService';
+import { PushNotificationService } from './services/pushNotificationService';
 import { Header } from './components/layout/Header';
 import { Sidebar } from './components/layout/Sidebar';
 import { MobileNav } from './components/layout/MobileNav';
@@ -137,6 +138,8 @@ export default function App() {
         setActiveView('profile');
       } else if (candidate === 'admin') {
         setActiveView('admin');
+      } else if (candidate === 'notifications' || candidate === 'notification' || candidate === 'push') {
+        setActiveView('notifications');
       } else if (hash) {
         setActiveView(hash);
       }
@@ -144,6 +147,10 @@ export default function App() {
     syncRouteFromUrl();
     window.addEventListener('hashchange', syncRouteFromUrl);
     window.addEventListener('popstate', syncRouteFromUrl);
+
+    // Initialize Push & System Notification Service Worker
+    PushNotificationService.init();
+
     return () => {
       window.removeEventListener('hashchange', syncRouteFromUrl);
       window.removeEventListener('popstate', syncRouteFromUrl);

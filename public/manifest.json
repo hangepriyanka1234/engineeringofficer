@@ -1,0 +1,50 @@
+{
+  "id": "/",
+  "name": "Engineering Officer BY MH",
+  "short_name": "Engg Officer",
+  "description": "Civil Engineering Competitive Examination Preparation, Previous Year Papers & CBT Mock Tests",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0F2744",
+  "background_color": "#0F2744",
+  "categories": ["education", "productivity"],
+  "lang": "mr-IN",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Practice MCQs",
+      "url": "/#practice",
+      "description": "Start Civil Engineering MCQ Practice"
+    },
+    {
+      "name": "Previous Papers (PYQs)",
+      "url": "/#pyqs",
+      "description": "Solve MPSC, PWD, SSC JE Previous Year Papers"
+    },
+    {
+      "name": "CBT Mock Tests",
+      "url": "/#mock-tests",
+      "description": "Take Full Length CBT Simulation"
+    },
+    {
+      "name": "Notifications",
+      "url": "/#notifications",
+      "description": "Check Official Recruitment Updates"
+    }
+  ]
+}

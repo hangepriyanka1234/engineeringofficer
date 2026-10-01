@@ -288,6 +288,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </button>
       </section>
 
+      {/* Android Heads-Up Push Notification Strip */}
+      <div className="bg-gradient-to-r from-[#0F2744] via-[#1E3A8A] to-[#0284C7] rounded-xl p-3 sm:p-3.5 text-white flex items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center space-x-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 font-bold shadow-xs">
+            <Bell className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-bold flex items-center space-x-1.5 truncate">
+              <span>Android वरून येणारे पुश नोटिफिकेशन</span>
+              <span className="text-[9px] bg-amber-400 text-slate-950 font-extrabold px-1.5 py-0.2 rounded-full uppercase">LIVE</span>
+            </div>
+            <p className="text-[11px] text-sky-100 truncate">स्क्रीन लॉक असताना नवीन भरती जाहिराती, मॉक टेस्ट व स्मरणपत्रे थेट वरून मिळतील</p>
+          </div>
+        </div>
+        <button
+          id="dashboard-enable-notifications-btn"
+          onClick={() => setActiveView('notifications')}
+          className="px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 rounded-lg text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center space-x-1 active:scale-95"
+        >
+          <span>सुरू / टेस्ट करा</span>
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
       {/* 4. CONTINUE PRACTICE SECTION */}
       <section className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs">
         {hasUnfinishedPractice ? (

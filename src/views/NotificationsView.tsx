@@ -10,6 +10,7 @@ import {
   Filter
 } from 'lucide-react';
 import { NotificationItem } from '../types';
+import { AndroidNotificationBanner } from '../components/AndroidNotificationBanner';
 
 interface NotificationsViewProps {
   notifications: NotificationItem[];
@@ -30,6 +31,9 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Android Native Heads-Up Push Notification System Banner */}
+      <AndroidNotificationBanner />
+
       {/* Header */}
       <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

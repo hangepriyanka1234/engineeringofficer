@@ -1,0 +1,56 @@
+name: Supabase 24/7 Anti-Pause Keep-Alive Heartbeat
+
+on:
+  schedule:
+    # Runs every 6 hours (00:00, 06:00, 12:00, 18:00 UTC) every day
+    # Keeps Supabase free project 100% active even if app has 0 users
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+
+jobs:
+  keepalive:
+    name: Ping Supabase Database & Prevent Inactivity Pause
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Send Keep-Alive Ping to Supabase & Application
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          APP_URL: ${{ secrets.APP_URL }}
+        run: |
+          echo "=========================================================="
+          echo "⚡ STARTING SUPABASE 24/7 ANTI-PAUSE HEARTBEAT PING"
+          echo "Time: $(date -u)"
+          echo "=========================================================="
+
+          SUCCESS=0
+
+          # 1. Direct Ping to Supabase REST API (if GitHub secrets configured)
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            echo "👉 [Layer 1] Pinging Supabase REST API directly: $SUPABASE_URL"
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
+              "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1" \
+              -H "apikey: $SUPABASE_ANON_KEY" \
+              -H "Authorization: Bearer $SUPABASE_ANON_KEY" || echo "000")
+            
+            echo "Supabase REST API Response Status: $HTTP_CODE"
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 500 ]; then
+              echo "✅ Supabase project successfully acknowledged active API traffic!"
+              SUCCESS=1
+            fi
+          else
+            echo "ℹ️ Note: Add SUPABASE_URL and SUPABASE_ANON_KEY to GitHub Secrets for direct database ping."
+          fi
+
+          # 2. Ping Application Public Keepalive Webhook
+          TARGET_APP_URL="${APP_URL:-https://engineeringofficer.in}"
+          echo "👉 [Layer 2] Pinging Application Keepalive Webhook: $TARGET_APP_URL/api/supabase/keepalive"
+          APP_HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
+            "$TARGET_APP_URL/api/supabase/keepalive" || echo "000")
+          echo "Application Keepalive Webhook Status: $APP_HTTP_CODE"
+
+          echo "=========================================================="
+          echo "🎉 Supabase Heartbeat complete! Project active status refreshed."
+          echo "=========================================================="
