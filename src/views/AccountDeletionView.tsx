@@ -76,7 +76,7 @@ export const AccountDeletionView: React.FC<AccountDeletionViewProps> = ({
 
           {/* User Email Details */}
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs">
-            <div><strong>Registered Account Email:</strong> {profile?.email || 'gitevijay123@gmail.com'}</div>
+            <div><strong>Registered Account Email:</strong> {profile?.email || 'student@engineeringofficer.in'}</div>
             <div><strong>Operating Entity:</strong> PRIME MULTI SERVICES AND SUPPLIERS</div>
             <div><strong>Platform Name:</strong> Engineering Officer BY MH</div>
           </div>
@@ -139,7 +139,7 @@ export const AccountDeletionView: React.FC<AccountDeletionViewProps> = ({
           <CheckCircle2 className="w-16 h-16 text-emerald-600 mx-auto" />
           <h2 className="text-xl font-bold text-emerald-900">खाता हटवण्याची विनंती स्वीकारली गेली आहे!</h2>
           <p className="text-xs text-emerald-800 leading-relaxed max-w-md mx-auto">
-            Your account deletion request has been processed. All local telemetry and stored records for {profile?.email || 'gitevijay123@gmail.com'} have been cleared.
+            Your account deletion request has been processed. All local telemetry and stored records for {profile?.email || 'student@engineeringofficer.in'} have been cleared.
           </p>
           <button
             onClick={() => {

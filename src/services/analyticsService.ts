@@ -8,7 +8,7 @@ export class AnalyticsService {
    * Fetches the materialized analytics summary from the server.
    * Falls back gracefully to local storage aggregation or cached values.
    */
-  static async getStudentAnalytics(userEmail: string = 'gitevijay123@gmail.com'): Promise<CompleteStudentAnalytics> {
+  static async getStudentAnalytics(userEmail: string = 'student@engineeringofficer.in'): Promise<CompleteStudentAnalytics> {
     try {
       const res = await fetch(`/api/analytics/student?userEmail=${encodeURIComponent(userEmail)}`);
       if (res.ok) {
@@ -44,7 +44,7 @@ export class AnalyticsService {
   /**
    * Syncs a completed test attempt with the server-side aggregation engine
    */
-  static async recordTestAttempt(attempt: TestAttempt, userEmail: string = 'gitevijay123@gmail.com'): Promise<void> {
+  static async recordTestAttempt(attempt: TestAttempt, userEmail: string = 'student@engineeringofficer.in'): Promise<void> {
     try {
       await fetch('/api/analytics/record-attempt', {
         method: 'POST',
@@ -59,7 +59,7 @@ export class AnalyticsService {
   /**
    * Force refreshes the analytics materialized cache
    */
-  static async refreshCache(userEmail: string = 'gitevijay123@gmail.com'): Promise<CompleteStudentAnalytics> {
+  static async refreshCache(userEmail: string = 'student@engineeringofficer.in'): Promise<CompleteStudentAnalytics> {
     try {
       await fetch('/api/analytics/invalidate', {
         method: 'POST',

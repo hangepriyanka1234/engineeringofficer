@@ -38,7 +38,7 @@ export class ServerAIGatewayEngine {
   private static usageLedger: AIUsageRecord[] = [
     {
       id: 'log-001',
-      userEmail: 'gitevijay123@gmail.com',
+      userEmail: 'student@engineeringofficer.in',
       userTier: 'master',
       queryType: 'numerical',
       modelUsed: 'gemini-2.5-pro',

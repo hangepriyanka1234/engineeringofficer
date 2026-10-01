@@ -27,7 +27,7 @@ interface FormulaLabViewProps {
 }
 
 export const FormulaLabView: React.FC<FormulaLabViewProps> = ({
-  userEmail = 'gitevijay123@gmail.com',
+  userEmail = 'student@engineeringofficer.in',
   onSelectCalculator,
 }) => {
   const [formulas, setFormulas] = useState<CivilFormula[]>([]);

@@ -474,6 +474,64 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </button>
       </section>
 
+      {/* 9. PLAY STORE COMPLIANCE & LEGAL LINKS */}
+      <section className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <h3 className="font-bold text-xs text-slate-900 uppercase tracking-wider">
+              Google Play Store Compliance & Legal Links
+            </h3>
+          </div>
+          <a
+            href="/legal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          >
+            <span>सर्व लिंक्स हब (Open Legal Hub)</span>
+            <ChevronRight className="w-3 h-3" />
+          </a>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-slate-600">
+          <a
+            href="/privacy-policy"
+            className="hover:text-blue-600 hover:underline font-medium"
+          >
+            Privacy Policy (गोपनीयता)
+          </a>
+          <span className="text-slate-300">·</span>
+          <a
+            href="/terms-conditions"
+            className="hover:text-blue-600 hover:underline font-medium"
+          >
+            Terms of Service (अटी)
+          </a>
+          <span className="text-slate-300">·</span>
+          <a
+            href="/refund-policy"
+            className="hover:text-blue-600 hover:underline font-medium"
+          >
+            Refund Policy (परतावा)
+          </a>
+          <span className="text-slate-300">·</span>
+          <a
+            href="/delete-account"
+            className="hover:text-rose-600 hover:underline font-medium"
+          >
+            Delete Account (खाता हटवणे)
+          </a>
+          <span className="text-slate-300">·</span>
+          <a
+            href="/contact-us"
+            className="hover:text-blue-600 hover:underline font-medium"
+          >
+            Contact & Support
+          </a>
+        </div>
+      </section>
+
       {/* AI Assistant Quick Query Modal */}
       {showAIModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">

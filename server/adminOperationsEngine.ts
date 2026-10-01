@@ -40,7 +40,7 @@ export class ServerAdminOperationsEngine {
       actorRole: 'super_admin',
       action: 'UPDATE_ENTITLEMENT_TIER',
       targetType: 'student',
-      targetId: 'gitevijay123@gmail.com',
+      targetId: 'student@engineeringofficer.in',
       details: 'Upgraded student to Officer Master tier with lifetime access',
       ipAddress: '49.36.120.45',
       timestamp: new Date(Date.now() - 7200000).toISOString(),
@@ -62,11 +62,11 @@ export class ServerAdminOperationsEngine {
 
   private static students: Map<string, ManagedStudent> = new Map([
     [
-      'gitevijay123@gmail.com',
+      'student@engineeringofficer.in',
       {
         id: 'std-001',
-        name: 'Vijay Gite',
-        email: 'gitevijay123@gmail.com',
+        name: 'Civil Engineering Aspirant',
+        email: 'student@engineeringofficer.in',
         tier: 'master',
         targetExams: ['maha_pwd', 'maha_wrd', 'mpsc_mes'],
         totalQuestionsSolved: 342,

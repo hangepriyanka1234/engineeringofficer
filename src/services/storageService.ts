@@ -85,8 +85,8 @@ const STORAGE_KEYS = {
 
 const DEFAULT_PROFILE: StudentProfile = {
   id: 'usr-sp-001',
-  name: 'Vijay Gite',
-  email: 'gitevijay123@gmail.com',
+  name: 'Civil Engineering Aspirant',
+  email: 'student@engineeringofficer.in',
   phone: '+91 93708 72123',
   qualification: 'B.E. / B.Tech in Civil Engineering',
   passingYear: '2024',

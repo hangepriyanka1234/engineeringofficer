@@ -37,7 +37,7 @@ export const FormulaService = {
     }
   },
 
-  async toggleFavorite(formulaId: string, userEmail = 'gitevijay123@gmail.com'): Promise<boolean> {
+  async toggleFavorite(formulaId: string, userEmail = 'student@engineeringofficer.in'): Promise<boolean> {
     try {
       const res = await fetch(`/api/formulas/${formulaId}/favorite`, {
         method: 'POST',

@@ -392,8 +392,8 @@ export class ServerPaymentEngine {
     const sampleTx: PaymentTransactionRecord[] = [
       {
         id: 'tx_seed_1',
-        user_id: 'usr_vijay',
-        user_email: 'gitevijay123@gmail.com',
+        user_id: 'usr_student',
+        user_email: 'student@engineeringofficer.in',
         plan_id: 'plan_engineering_pro_combo',
         plan_name: 'Plan F — Engineering Pro Combo',
         razorpay_payment_id: 'pay_SP_Live_87612',

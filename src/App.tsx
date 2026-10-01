@@ -100,16 +100,54 @@ export default function App() {
   useEffect(() => {
     refreshData();
 
-    // Direct URL hash navigation for separate legal pages & deep links
-    const handleHashSync = () => {
-      const hash = window.location.hash.replace(/^#\/?/, '').trim();
-      if (hash) {
+    // Direct URL pathname, query, and hash navigation for separate legal pages & deep links
+    const syncRouteFromUrl = () => {
+      const pathname = window.location.pathname.replace(/^\//, '').toLowerCase().trim();
+      const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
+      const searchParams = new URLSearchParams(window.location.search);
+      const queryView = (searchParams.get('view') || searchParams.get('page') || '').toLowerCase().trim();
+
+      const candidate = pathname || hash || queryView;
+
+      if (!candidate) return;
+
+      if (candidate.includes('privacy')) {
+        setActiveView('privacy-policy');
+      } else if (candidate.includes('delete-account') || candidate.includes('account-deletion')) {
+        setActiveView('account-deletion');
+      } else if (candidate.includes('terms')) {
+        setActiveView('terms-conditions');
+      } else if (candidate.includes('refund') || candidate.includes('cancellation')) {
+        setActiveView('refund-policy');
+      } else if (candidate.includes('shipping')) {
+        setActiveView('shipping-policy');
+      } else if (candidate.includes('contact') || candidate.includes('support')) {
+        setActiveView('contact');
+      } else if (candidate.includes('compliance') || candidate.includes('playstore') || candidate === 'legal') {
+        setShowComplianceModal(true);
+      } else if (candidate === 'practice') {
+        setActiveView('practice');
+      } else if (candidate === 'pyqs' || candidate === 'question-papers') {
+        setActiveView('pyqs');
+      } else if (candidate === 'mock-tests' || candidate === 'mocks') {
+        setActiveView('mock-tests');
+      } else if (candidate === 'exams' || candidate === 'exam-ecosystem') {
+        setActiveView('exam-ecosystem');
+      } else if (candidate === 'profile') {
+        setActiveView('profile');
+      } else if (candidate === 'admin') {
+        setActiveView('admin');
+      } else if (hash) {
         setActiveView(hash);
       }
     };
-    handleHashSync();
-    window.addEventListener('hashchange', handleHashSync);
-    return () => window.removeEventListener('hashchange', handleHashSync);
+    syncRouteFromUrl();
+    window.addEventListener('hashchange', syncRouteFromUrl);
+    window.addEventListener('popstate', syncRouteFromUrl);
+    return () => {
+      window.removeEventListener('hashchange', syncRouteFromUrl);
+      window.removeEventListener('popstate', syncRouteFromUrl);
+    };
   }, []);
 
   const handleNotificationRead = (id: string) => {
@@ -592,6 +630,7 @@ export default function App() {
       <PlayStoreComplianceModal
         isOpen={showComplianceModal}
         onClose={() => setShowComplianceModal(false)}
+        onNavigateToView={(v) => setActiveView(v)}
       />
 
       {/* Student Onboarding & Personalization Modal */}

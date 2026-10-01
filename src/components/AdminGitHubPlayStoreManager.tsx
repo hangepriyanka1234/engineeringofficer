@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 
 export const AdminGitHubPlayStoreManager: React.FC = () => {
-  const [repoName, setRepoName] = useState('gitevijay123/engineeringofficer');
+  const [repoName, setRepoName] = useState('engineeringofficerapp/civil-prep');
   const [githubToken, setGithubToken] = useState('');
   const [showToken, setShowToken] = useState(false);
   const [isPulling, setIsPulling] = useState(false);
@@ -32,7 +32,7 @@ export const AdminGitHubPlayStoreManager: React.FC = () => {
   const [isBuildingAab, setIsBuildingAab] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'info' | 'error'; text: string } | null>({
     type: 'info',
-    text: 'Repository connected: gitevijay123/engineeringofficer. Ready for Git operations and Play Store .aab builds.',
+    text: 'Repository connected: engineeringofficerapp/civil-prep. Ready for Git operations and Play Store .aab builds.',
   });
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
