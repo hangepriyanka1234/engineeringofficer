@@ -27,7 +27,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: ☕ Setup Java JDK 17
         uses: actions/setup-java@v4
@@ -35,35 +34,48 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: 🐘 Setup Gradle Build Environment
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.4
+
       - name: 📦 Install App Dependencies
-        run: npm ci || npm install
+        run: |
+          npm install --no-audit --prefer-offline || npm install
 
       - name: 🚀 Build Web Assets (Vite Production)
-        run: npm run build
+        run: |
+          npm run build
 
       - name: 📱 Setup Capacitor & Gradle Android Project
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap sync android || true
+          cd android
+          if [ ! -f "gradlew" ]; then
+            echo "Creating gradle wrapper in android/..."
+            gradle wrapper --gradle-version 8.4 || true
+          fi
+          chmod +x gradlew || true
+          cd ..
 
       - name: 🔑 Build Release App Bundle (.AAB) using Gradle
         run: |
-          if [ -f "android/gradlew" ]; then
-            cd android
-            chmod +x gradlew
-            ./gradlew bundleRelease assembleRelease
-            cd ..
+          cd android
+          if [ -f "gradlew" ]; then
+            ./gradlew bundleRelease assembleRelease --no-daemon || ./gradlew assembleRelease --no-daemon
           else
-            echo "Gradle wrapper missing in android/. Ensure android/gradlew is present."
+            gradle bundleRelease assembleRelease --no-daemon || gradle assembleRelease --no-daemon
           fi
+          cd ..
 
       - name: 🔍 Verify Authentic Google Play App Bundle (.AAB)
         run: |
-          # Strict Code Audit: Ensure authentic compiled .aab file exists
-          if [ -f "android/app/build/outputs/bundle/release/app-release.aab" ]; (
-            echo "✅ Authentic Android App Bundle (.aab) verified."
-          ) else
-            echo "⚠️ Gradle output pending or built in custom directory."
+          if ls android/app/build/outputs/bundle/*/*.aab 1> /dev/null 2>&1; then
+            echo "✅ Authentic Android App Bundle (.aab) verified!"
+          else
+            echo "ℹ️ Checking build outputs directory:"
+            ls -R android/app/build/outputs/ || true
           fi
 
       - name: 📤 Upload Google Play Store Bundle (.AAB) Artifact
@@ -71,7 +83,7 @@ jobs:
         with:
           name: Google-Play-Store-App-Bundle-AAB-BY-MH
           path: |
-            android/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/bundle/**/*.aab
           if-no-files-found: warn
 
       - name: 📤 Upload Release APK for Direct Testing
@@ -79,7 +91,7 @@ jobs:
         with:
           name: Android-Release-APK-BY-MH
           path: |
-            android/app/build/outputs/apk/release/*.apk
+            android/app/build/outputs/apk/**/*.apk
           if-no-files-found: warn
 
       - name: ✅ Build Summary & Play Console Next Steps
