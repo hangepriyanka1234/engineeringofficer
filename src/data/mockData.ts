@@ -193,6 +193,30 @@ export const EXAM_CATALOGUE: ExamCatalogueItem[] = [
     activeRecruitmentsCount: 1,
     totalQuestions: 290,
   },
+  {
+    id: 'maha_cea',
+    name: 'स्थापत्य अभियांत्रिकी सहाय्यक (Civil Engineering Assistant - CEA)',
+    shortName: 'स्थापत्य सहाय्यक (CEA)',
+    authority: 'सार्वजनिक बांधकाम (PWD), जलसंपदा (WRD) व जिल्हा परिषद (ZP)',
+    level: 'State',
+    eligibility: 'स्थापत्य अभियांत्रिकी पदविका (Diploma Civil) / CEA 1-Year Course / ITI Civil Draughtsman',
+    frequencyNote: 'महाराष्ट्र शासनाच्या सर्व विभागांमधील वर्ग-३ तांत्रिक भरती (TCS / IBPS पॅटर्न).',
+    iconName: 'Wrench',
+    activeRecruitmentsCount: 3,
+    totalQuestions: 680,
+  },
+  {
+    id: 'mahatransco_civil',
+    name: 'महाट्रान्सको / महावितरण / महानिर्मिती Civil AE & JE भरती',
+    shortName: 'MahaTransco Civil',
+    authority: 'Maharashtra State Power Transmission & Distribution Corp',
+    level: 'State',
+    eligibility: 'B.E./B.Tech Civil (Assistant Engineer) / Diploma Civil (Junior Engineer)',
+    frequencyNote: 'ऊर्जा विभाग (MSEB) अंतर्गत स्वतंत्र तांत्रिक व बुद्धिमत्ता CBT परीक्षा.',
+    iconName: 'Zap',
+    activeRecruitmentsCount: 1,
+    totalQuestions: 310,
+  },
 ];
 
 export const SUBJECTS_LIST: SubjectItem[] = [
@@ -329,6 +353,17 @@ export const SUBJECTS_LIST: SubjectItem[] = [
     isCodesRelevant: ['IS 1200 (Measurement of Building Works)', 'PWD DSR 2024-25'],
   },
   {
+    id: 'engg_economics',
+    name: 'अभियांत्रिकी अर्थशास्त्र व प्रकल्प वित्तीय व्यवस्थापन (Engineering Economics & Project Finance)',
+    code: 'CE-ECO',
+    weightagePercent: 6,
+    icon: 'DollarSign',
+    description: 'Time Value of Money, Cash Flow Diagrams, Net Present Value (NPV), Benefit-Cost Ratio (BCR) in Public Works, Internal Rate of Return (IRR), Break-Even Analysis, Depreciation (Straight Line, Sinking Fund, Declining Balance), PWD DSR Schedule Rate Economics & PPP Infra Models (BOT, HAM, EPC).',
+    topicsCount: 8,
+    questionCount: 35,
+    isCodesRelevant: ['PWD Standard Specifications', 'IRC Special Publication 19', 'NITI Aayog PPP Guidelines'],
+  },
+  {
     id: 'cpm_pert',
     name: 'CPM / PERT & Construction Management',
     code: 'CE-CPM',
@@ -360,6 +395,105 @@ export const SUBJECTS_LIST: SubjectItem[] = [
     topicsCount: 4,
     questionCount: 20,
     isCodesRelevant: ['UDCPR Maharashtra 2020', 'NBC 2016'],
+  },
+  {
+    id: 'concrete_tech',
+    name: 'Concrete Technology (CT)',
+    code: 'CE-CT',
+    weightagePercent: 6,
+    icon: 'Layers',
+    description: 'Cement hydration, workability testing (Slump test, Compacting factor), mineral & chemical admixtures, concrete durability, non-destructive testing (Rebound hammer, UPV).',
+    topicsCount: 6,
+    questionCount: 30,
+    isCodesRelevant: ['IS 10262:2019', 'IS 456:2000', 'IS 13311'],
+  },
+  {
+    id: 'marathi_grammar',
+    name: 'मराठी व्याकरण व शब्दसंग्रह (Marathi Grammar)',
+    code: 'NON-TECH-MAR',
+    weightagePercent: 10,
+    icon: 'BookOpen',
+    description: 'वर्णविचार, नाम, सर्वनाम, विशेषण, क्रियापद, काळ, प्रयोग (कर्तरी, कर्मणी, भावे), समास, समानार्थी व विरुद्धार्थी शब्द, वाक्प्रचार व म्हणी (TCS/IBPS पॅटर्ननुसार अनिवार्य विषय).',
+    topicsCount: 12,
+    questionCount: 60,
+    isCodesRelevant: ['महाराष्ट्र शासन प्रमाणित व्याकरण'],
+  },
+  {
+    id: 'english_grammar',
+    name: 'General English & Comprehension',
+    code: 'NON-TECH-ENG',
+    weightagePercent: 10,
+    icon: 'FileText',
+    description: 'Tenses, Subject-Verb Agreement, Prepositions, Conjunctions, Active & Passive Voice, Direct & Indirect Speech, Synonyms, Antonyms, Idioms & Phrases, Error Spotting.',
+    topicsCount: 10,
+    questionCount: 50,
+    isCodesRelevant: ['Standard Competitive English'],
+  },
+  {
+    id: 'general_intelligence',
+    name: 'General Intelligence & Reasoning (बुद्धिमत्ता)',
+    code: 'NON-TECH-REAS',
+    weightagePercent: 10,
+    icon: 'Sparkles',
+    description: 'संख्या मालिका (Number Series), अक्षर मालिका, कोडिंग-डिकोडिंग, नातेसंबंध (Blood Relations), दिशा ज्ञान (Direction Test), बैठक व्यवस्था, वेन आकृत्या, विधाने व निष्कर्ष.',
+    topicsCount: 10,
+    questionCount: 55,
+    isCodesRelevant: ['TCS / IBPS Reasoning Standard'],
+  },
+  {
+    id: 'general_studies',
+    name: 'General Studies & Maharashtra GK (सामान्य ज्ञान)',
+    code: 'NON-TECH-GK',
+    weightagePercent: 10,
+    icon: 'Landmark',
+    description: 'महाराष्ट्राचा भूगोल (नद्या, किल्ले, जिल्हे), महाराष्ट्राचा इतिहास (समाजसुधारक, 1857 चा उठाव), भारतीय राज्यघटना, चालू घडामोडी, विज्ञान व पर्यावरण.',
+    topicsCount: 10,
+    questionCount: 65,
+    isCodesRelevant: ['State General Knowledge Matrix'],
+  },
+  {
+    id: 'economics_gs',
+    name: 'अर्थशास्त्र व भारतीय अर्थव्यवस्था (Economics & Public Finance)',
+    code: 'NON-TECH-ECO',
+    weightagePercent: 8,
+    icon: 'DollarSign',
+    description: 'भारतीय अर्थव्यवस्थेची वैशिष्ट्ये, राष्ट्रीय उत्पन्न (GDP, GNP, NNP), नियोजन व नीती आयोग (NITI Aayog), चलनवाढ व महागाई, रिझर्व्ह बँक (RBI पतधोरण), शासकीय अर्थसंकल्प, कर रचना (GST), पायाभूत सुविधा विकास (Infrastructure Financing in Civil Projects), दारिद्र्य व बेरोजगारी.',
+    topicsCount: 9,
+    questionCount: 45,
+    isCodesRelevant: ['महाराष्ट्र आर्थिक पाहणी अहवाल व केंद्रीय अर्थसंकल्प'],
+  },
+  {
+    id: 'environment_ecology',
+    name: 'पर्यावरण, परिसंस्था व हवामान बदल (Environment & Ecology)',
+    code: 'NON-TECH-ENV',
+    weightagePercent: 8,
+    icon: 'Trees',
+    description: 'परिसंस्था (Ecosystems), जैवविविधता व हॉटस्पॉट्स, हवामान बदल व हरितगृह वायू, जल व वायू प्रदूषण नियंत्रण, घनकचरा व्यवस्थापन (Solid Waste Management), EIA (Environmental Impact Assessment for Civil Projects), पर्यावरण संरक्षण कायदा १९८६.',
+    topicsCount: 8,
+    questionCount: 40,
+    isCodesRelevant: ['EPA 1986, CPCB Standards, National Green Tribunal'],
+  },
+  {
+    id: 'indian_polity',
+    name: 'भारतीय राज्यघटना व पंचायत राज (Indian Polity & Local Bodies)',
+    code: 'NON-TECH-POL',
+    weightagePercent: 8,
+    icon: 'Shield',
+    description: 'राज्यघटनेची निर्मिती, प्रस्तावना, मूलभूत हक्क व मार्गदर्शक तत्वे, संसद व राष्ट्रपती, महाराष्ट्र विधानसभा व राज्यपाल, न्यायव्यवस्था, ७३ वी व ७४ वी घटनादुरुस्ती (जिल्हा परिषद, पंचायत समिती, महानगरपालिका संरचना - PWD, WRD, ZP परीक्षेत हमखास येणारे प्रश्न).',
+    topicsCount: 9,
+    questionCount: 48,
+    isCodesRelevant: ['भारतीय संविधान व महाराष्ट्र जिल्हा परिषद अधिनियम'],
+  },
+  {
+    id: 'general_science',
+    name: 'सामान्य विज्ञान व तंत्रज्ञान (General Science & Physics)',
+    code: 'NON-TECH-SCI',
+    weightagePercent: 6,
+    icon: 'Cpu',
+    description: 'मूलभूत भौतिकशास्त्र (दाब, घनता, गतीचे नियम), रसायनशास्त्र (धातू, अधातू, रासायनिक अभिक्रिया), जीवशास्त्र (आरोग्यशास्त्र व रोग), ऊर्जा स्रोत (सौर ऊर्जा, अणुऊर्जा), अवकाश व उपग्रह तंत्रज्ञान.',
+    topicsCount: 8,
+    questionCount: 35,
+    isCodesRelevant: ['NCERT / SCERT 8th to 10th Standard'],
   },
 ];
 
@@ -1279,6 +1413,169 @@ export const MOCK_TESTS: MockTest[] = [
 ];
 
 export const PYQ_PAPERS: PYQPaper[] = [
+  // 2024 Papers
+  {
+    id: 'pyq-mpsc-2024',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Civil Engineering Services Prelims Official Paper 2024',
+    year: 2024,
+    shift: 'General Session',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    conductingBody: 'महाराष्ट्र लोकसेवा आयोग (MPSC)',
+    officialBookletSeries: ['Series A', 'Series B', 'Series C', 'Series D'],
+    officialGazetteNotice: 'MPSC Advt 038/2024 Final Key Gazette Dt 18-Oct-2024',
+    cutoffScore: 136,
+    categoryCutoffs: { open: 136, obc: 130, ews: 132, sc: 122, st: 110, female: 124 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    isLatestPattern: true,
+    subjectBreakdown: [
+      { subject: 'RCC & Prestressed Concrete', count: 14 },
+      { subject: 'Soil Mechanics & Foundation', count: 12 },
+      { subject: 'Structural Analysis & SOM', count: 12 },
+      { subject: 'Fluid Mechanics & Hydraulics', count: 10 },
+      { subject: 'Surveying & Geomatics', count: 10 },
+      { subject: 'Transportation & Highway', count: 8 },
+      { subject: 'Environmental Engineering', count: 8 },
+      { subject: 'Building Materials & Tech', count: 8 },
+      { subject: 'Estimating & Valuation', count: 8 },
+      { subject: 'General Studies & Maths', count: 10 },
+    ],
+    officialInstructions: [
+      'या प्रश्नपुस्तिकेत १०० बहुपर्यायी प्रश्न आहेत. सर्व प्रश्न सोडविणे अनिवार्य आहे.',
+      'प्रत्येक अचूक उत्तरासाठी २ गुण दिले जातील.',
+      'प्रत्येक चुकीच्या उत्तरासाठी १/४ (०.५० गुण) वजा केले जातील (Negative Marking).',
+      'उत्तरपत्रिकेवर (OMR) काळ्या किंवा निळ्या बॉलपेननेच वर्तुळ पूर्णपणे भरावे.'
+    ],
+    keyHighlights: ['100 MCQs Compulsory', 'MPSC 1/4th Negative Marking', 'Revised Master Final Key Included'],
+    questionIds: ['q-101', 'q-102', 'q-104', 'q-106', 'q-110'],
+  },
+  {
+    id: 'pyq-sscje-2024',
+    examTargetId: 'ssc_je',
+    title: 'SSC Junior Engineer (Civil) CBT Paper-1 2024 (Shift 1 & 2)',
+    year: 2024,
+    shift: 'Morning & Afternoon Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    conductingBody: 'Staff Selection Commission (SSC Central Govt)',
+    officialBookletSeries: ['Morning Master Key', 'Afternoon Master Key'],
+    officialGazetteNotice: 'SSC F.No. 3/1/2024-C-1/1 Final Normalized Key Dt 12-Jul-2024',
+    cutoffScore: 118,
+    categoryCutoffs: { open: 118, obc: 112, ews: 110, sc: 98, st: 92, female: 114 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 1,
+    isLatestPattern: true,
+    subjectBreakdown: [
+      { subject: 'Building Materials & Concrete', count: 20 },
+      { subject: 'Surveying & Leveling', count: 14 },
+      { subject: 'Soil Mechanics', count: 12 },
+      { subject: 'Hydraulics & Fluid', count: 12 },
+      { subject: 'RCC & Steel', count: 16 },
+      { subject: 'Environmental Engg', count: 10 },
+      { subject: 'Estimating Costing', count: 8 },
+      { subject: 'Transportation', count: 8 },
+    ],
+    officialInstructions: [
+      'Paper-1 consists of 100 objective multiple choice questions.',
+      'Each question carries 1 mark. 0.25 marks deducted for wrong response.',
+      'Use onscreen virtual calculator is strictly prohibited in Paper-1.'
+    ],
+    keyHighlights: ['All India Ranking Basis', 'Heavy on Building Materials & Survey'],
+    questionIds: ['q-101', 'q-103', 'q-105', 'q-107', 'q-111'],
+  },
+  {
+    id: 'pyq-pwd-je-2024',
+    examTargetId: 'maha_pwd',
+    title: 'Maha PWD Junior Engineer (Civil) State Screening Exam 2024',
+    year: 2024,
+    shift: 'TCS iON Shift 1',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    conductingBody: 'सार्वजनिक बांधकाम विभाग, महाराष्ट्र शासन (PWD / TCS iON)',
+    officialBookletSeries: ['Shift 1 Master Response', 'Shift 2 Master Response'],
+    officialGazetteNotice: 'PWD-JE/Recruit-2024 TCS Final Key Gazette Dt 22-Feb-2024',
+    cutoffScore: 152,
+    categoryCutoffs: { open: 152, obc: 146, ews: 148, sc: 138, st: 126, female: 142 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    isLatestPattern: true,
+    subjectBreakdown: [
+      { subject: 'Civil Engineering Core Technical', count: 75 },
+      { subject: 'मराठी भाषा व व्याकरण', count: 10 },
+      { subject: 'English Language', count: 5 },
+      { subject: 'General Knowledge & Current Affairs', count: 5 },
+      { subject: 'Reasoning & Aptitude', count: 5 },
+    ],
+    officialInstructions: [
+      'TCS iON Online Computer Based Examination.',
+      '100 Questions, 200 Total Marks. Time: 120 Minutes.',
+      'Negative marking: 1/4th (0.50 Mark per incorrect question).'
+    ],
+    keyHighlights: ['TCS iON Interface', 'Technical 75% Weightage', 'High Cutoff Exam'],
+    questionIds: ['q-101', 'q-103', 'q-105', 'q-108'],
+  },
+  {
+    id: 'pyq-mahatransco-2024',
+    examTargetId: 'mahatransco_civil',
+    title: 'MahaTransco Civil Assistant Engineer (AE) Official Paper 2024',
+    year: 2024,
+    shift: 'IBPS Online CBT',
+    totalQuestions: 130,
+    durationMinutes: 120,
+    totalMarks: 150,
+    hasCbtMode: true,
+    conductingBody: 'महाराष्ट्र राज्य विद्युत पारेषण कंपनी मर्यादित (MSETCL / IBPS)',
+    officialBookletSeries: ['IBPS Master Sheet'],
+    officialGazetteNotice: 'MahaTransco Advt 04/2024 Final Key Dt 29-Mar-2024',
+    cutoffScore: 104,
+    categoryCutoffs: { open: 104, obc: 98, ews: 100, sc: 88, st: 78, female: 94 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 1,
+    isLatestPattern: true,
+    keyHighlights: ['IBPS Standard Timing', 'Substation Structural Focus'],
+    questionIds: ['q-101', 'q-102', 'q-106', 'q-111'],
+  },
+
+  // 2023 Papers (Heavy Maharashtra Recruitment Year)
+  {
+    id: 'pyq-pwd-cea-2023',
+    examTargetId: 'maha_cea',
+    title: 'Maha PWD स्थापत्य अभियांत्रिकी सहाय्यक (CEA) 2023 — Official TCS Paper',
+    year: 2023,
+    shift: 'TCS Shift 1 (Technical + Non-Technical)',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    conductingBody: 'सार्वजनिक बांधकाम विभाग (PWD CEA Selection Board)',
+    officialBookletSeries: ['TCS Shift 1 Master', 'TCS Shift 2 Master'],
+    officialGazetteNotice: 'PWD CEA 2023 Master Shift Key Notification Dt 15-Dec-2023',
+    cutoffScore: 142,
+    categoryCutoffs: { open: 142, obc: 136, ews: 138, sc: 128, st: 118, female: 134 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    subjectBreakdown: [
+      { subject: 'स्थापत्य अभियांत्रिकी तांत्रिक घटक', count: 75 },
+      { subject: 'मराठी व्याकरण व शब्दसंग्रह', count: 10 },
+      { subject: 'इंग्रजी भाषा', count: 5 },
+      { subject: 'सामान्य ज्ञान व चालू घडामोडी', count: 5 },
+      { subject: 'बुद्धिमत्ता चाचणी', count: 5 },
+    ],
+    officialInstructions: [
+      'स्थापत्य अभियांत्रिकी सहाय्यक पदासाठी TCS iON द्वारे आयोजित ऑनलाइन परीक्षा.',
+      'प्रत्येक बरोबर उत्तरास २ गुण व चुकीच्या उत्तरास ०.५० गुण वजा केले जातील.'
+    ],
+    keyHighlights: ['Civil Engineering Assistant Cadre', 'Diploma Level Direct Formulas', 'Official Answer Key Verified'],
+    questionIds: ['q-101', 'q-103', 'q-105', 'q-107', 'q-108'],
+  },
   {
     id: 'pyq-pwd-2023',
     examTargetId: 'maha_pwd',
@@ -1289,19 +1586,110 @@ export const PYQ_PAPERS: PYQPaper[] = [
     durationMinutes: 120,
     totalMarks: 200,
     hasCbtMode: true,
+    conductingBody: 'सार्वजनिक बांधकाम विभाग, महाराष्ट्र शासन (PWD)',
+    officialBookletSeries: ['Shift 1 Master Key', 'Shift 2 Master Key'],
+    officialGazetteNotice: 'Maha PWD Recruitment Notice 2023 Final Key Dt 28-Dec-2023',
+    cutoffScore: 148,
+    categoryCutoffs: { open: 148, obc: 142, ews: 144, sc: 134, st: 122, female: 138 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    subjectBreakdown: [
+      { subject: 'Technical Civil Engineering', count: 75 },
+      { subject: 'General Marathi & English', count: 15 },
+      { subject: 'Aptitude & GK', count: 10 },
+    ],
+    keyHighlights: ['Authentic Shift 1 Master Key', 'IS 456, IS 800, IRC Clauses Verified'],
     questionIds: ['q-101', 'q-103', 'q-105', 'q-108'],
   },
   {
-    id: 'pyq-mpsc-2022',
-    examTargetId: 'mpsc_civil',
-    title: 'MPSC Civil Engineering Services Mains 2022 — Paper I & II',
-    year: 2022,
-    shift: 'Combined Full Paper',
+    id: 'pyq-zp-je-2023',
+    examTargetId: 'zp_civil',
+    title: 'Zilla Parishad (ZP) Civil Junior Engineer 2023 (IBPS Pattern)',
+    year: 2023,
+    shift: 'IBPS Shift 1',
     totalQuestions: 100,
     durationMinutes: 120,
     totalMarks: 200,
     hasCbtMode: true,
-    questionIds: ['q-101', 'q-102', 'q-104', 'q-106', 'q-110'],
+    conductingBody: 'ग्रामविकास विभाग / जिल्हा परिषद (ZP Civil - IBPS)',
+    officialBookletSeries: ['IBPS Master Shift A', 'IBPS Master Shift B'],
+    officialGazetteNotice: 'ZP Civil 2023 District Selection Key Dt 28-Nov-2023',
+    cutoffScore: 138,
+    categoryCutoffs: { open: 138, obc: 132, ews: 134, sc: 124, st: 114, female: 128 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    subjectBreakdown: [
+      { subject: 'Technical Civil', count: 80 },
+      { subject: 'Marathi & English', count: 10 },
+      { subject: 'GK & Reasoning', count: 10 },
+    ],
+    keyHighlights: ['IBPS Standard Interface', 'District Wise Merit Lists'],
+    questionIds: ['q-101', 'q-105', 'q-107', 'q-109'],
+  },
+  {
+    id: 'pyq-zp-cea-2023',
+    examTargetId: 'maha_cea',
+    title: 'Zilla Parishad (ZP) स्थापत्य अभियांत्रिकी सहाय्यक (CEA) 2023 Paper',
+    year: 2023,
+    shift: 'IBPS State Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    conductingBody: 'ग्रामविकास व पंचायत राज विभाग, महाराष्ट्र (ZP CEA)',
+    officialBookletSeries: ['IBPS Master Key'],
+    cutoffScore: 134,
+    categoryCutoffs: { open: 134, obc: 128, ews: 130, sc: 120, st: 110, female: 124 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    keyHighlights: ['Direct Field Practice MCQs', 'Surveying & Irrigation heavy'],
+    questionIds: ['q-101', 'q-103', 'q-107', 'q-108'],
+  },
+  {
+    id: 'pyq-wrd-je-2023',
+    examTargetId: 'wrd_irrigation',
+    title: 'WRD Jalsampada Junior Engineer (Civil) Official Paper 2023',
+    year: 2023,
+    shift: 'TCS Morning Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    conductingBody: 'जलसंपदा विभाग, महाराष्ट्र शासन (WRD Maharashtra)',
+    officialBookletSeries: ['TCS Shift 1 Master', 'TCS Shift 2 Master'],
+    officialGazetteNotice: 'WRD Recruit-2023 TCS iON Final Key Dt 05-Jan-2024',
+    cutoffScore: 146,
+    categoryCutoffs: { open: 146, obc: 140, ews: 142, sc: 132, st: 120, female: 136 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    subjectBreakdown: [
+      { subject: 'Hydraulics, Fluid Mechanics & Dams', count: 24 },
+      { subject: 'Irrigation & Hydrology', count: 18 },
+      { subject: 'RCC & Concrete Tech', count: 14 },
+      { subject: 'Soil Mechanics & Foundations', count: 12 },
+      { subject: 'Surveying & Canal Alignments', count: 12 },
+      { subject: 'Non-Tech (Marathi, GK, Aptitude)', count: 20 },
+    ],
+    keyHighlights: ['Canal, Dam & Fluid Mechanics Dominance', 'Official Revised Key'],
+    questionIds: ['q-101', 'q-104', 'q-107', 'q-109'],
+  },
+  {
+    id: 'pyq-wrd-cea-2023',
+    examTargetId: 'maha_cea',
+    title: 'WRD Jalsampada स्थापत्य अभियांत्रिकी सहाय्यक (CEA) 2023 Paper',
+    year: 2023,
+    shift: 'TCS Afternoon Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    conductingBody: 'जलसंपदा विभाग (WRD Maharashtra CEA)',
+    cutoffScore: 138,
+    categoryCutoffs: { open: 138, obc: 132, ews: 134, sc: 122, st: 112, female: 128 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    keyHighlights: ['Dam cross-sections, Weir and Barrage Qs', 'Field Estimating'],
+    questionIds: ['q-101', 'q-103', 'q-107', 'q-111'],
   },
   {
     id: 'pyq-sscje-2023',
@@ -1313,7 +1701,53 @@ export const PYQ_PAPERS: PYQPaper[] = [
     durationMinutes: 120,
     totalMarks: 100,
     hasCbtMode: true,
+    conductingBody: 'Staff Selection Commission (SSC Central Govt)',
+    cutoffScore: 110,
+    categoryCutoffs: { open: 110, obc: 104, ews: 102, sc: 90, st: 84, female: 106 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 1,
+    keyHighlights: ['SSC 2023 Shift 2 Paper', 'High accuracy on Steel & Concrete'],
     questionIds: ['q-101', 'q-103', 'q-105', 'q-106', 'q-107', 'q-111'],
+  },
+  {
+    id: 'pyq-ese-2023',
+    examTargetId: 'upsc_ese',
+    title: 'UPSC ESE/IES Civil Engineering Prelims Paper-II 2023',
+    year: 2023,
+    shift: 'General Prelims',
+    totalQuestions: 150,
+    durationMinutes: 180,
+    totalMarks: 300,
+    hasCbtMode: true,
+    conductingBody: 'Union Public Service Commission (UPSC ESE)',
+    cutoffScore: 198,
+    categoryCutoffs: { open: 198, obc: 190, ews: 188, sc: 172, st: 162, female: 192 },
+    negativeMarkRatio: 0.333,
+    marksPerQuestion: 2,
+    keyHighlights: ['National Class-1 Officer Standard', '1/3rd Negative Marking'],
+    questionIds: ['q-102', 'q-106', 'q-110'],
+  },
+
+  // 2022 Papers
+  {
+    id: 'pyq-mpsc-2022',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Civil Engineering Services Mains 2022 — Paper I & II',
+    year: 2022,
+    shift: 'Combined Full Paper',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    conductingBody: 'महाराष्ट्र लोकसेवा आयोग (MPSC)',
+    officialBookletSeries: ['Series A', 'Series B', 'Series C', 'Series D'],
+    officialGazetteNotice: 'MPSC Advt 012/2022 Final Key Dt 14-Nov-2022',
+    cutoffScore: 144,
+    categoryCutoffs: { open: 144, obc: 138, ews: 140, sc: 130, st: 118, female: 132 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
+    keyHighlights: ['MPSC MES Mains Core', 'IS 456, IS 800, IS 1343 Clauses'],
+    questionIds: ['q-101', 'q-102', 'q-104', 'q-106', 'q-110'],
   },
   {
     id: 'pyq-wrd-2022',
@@ -1325,6 +1759,11 @@ export const PYQ_PAPERS: PYQPaper[] = [
     durationMinutes: 120,
     totalMarks: 200,
     hasCbtMode: true,
+    conductingBody: 'जलसंपदा विभाग, महाराष्ट्र शासन (WRD)',
+    cutoffScore: 140,
+    categoryCutoffs: { open: 140, obc: 134, ews: 136, sc: 126, st: 116, female: 130 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 2,
     questionIds: ['q-107', 'q-109', 'q-101'],
   },
   {
@@ -1337,31 +1776,680 @@ export const PYQ_PAPERS: PYQPaper[] = [
     durationMinutes: 120,
     totalMarks: 100,
     hasCbtMode: true,
+    conductingBody: 'बृहन्मुंबई महानगरपालिका (BMC / MCGM)',
+    cutoffScore: 68,
+    categoryCutoffs: { open: 68, obc: 64, ews: 65, sc: 58, st: 52, female: 62 },
+    negativeMarkRatio: 0.25,
+    marksPerQuestion: 1,
+    keyHighlights: ['Municipal By-laws & Mumbai City Infrastructure Focus'],
     questionIds: ['q-105', 'q-108', 'q-111'],
   },
   {
-    id: 'pyq-ese-2023',
-    examTargetId: 'upsc_ese',
-    title: 'UPSC ESE/IES Civil Engineering Prelims Paper-II 2023',
-    year: 2023,
-    shift: 'General Prelims',
-    totalQuestions: 150,
-    durationMinutes: 180,
-    totalMarks: 300,
+    id: 'pyq-tp-2022',
+    examTargetId: 'urban_dev_tp',
+    title: 'Directorate of Town Planning Assistant (Civil) Exam 2022',
+    year: 2022,
+    shift: 'Planning Assistant Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
     hasCbtMode: true,
-    questionIds: ['q-102', 'q-106', 'q-110'],
+    questionIds: ['q-101', 'q-105', 'q-108'],
+  },
+
+  // 2021 Papers
+  {
+    id: 'pyq-mpsc-pre-2021',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Civil Engineering Services Prelims Exam 2021',
+    year: 2021,
+    shift: 'Morning Prelims',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-102', 'q-106', 'q-110'],
+  },
+  {
+    id: 'pyq-sscje-2021',
+    examTargetId: 'ssc_je',
+    title: 'SSC Junior Engineer (Civil) Paper-I CBT 2021',
+    year: 2021,
+    shift: 'Shift 1',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-103', 'q-105', 'q-107'],
+  },
+
+  // 2020 Papers
+  {
+    id: 'pyq-mpsc-main-2020',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Maharashtra Engineering Services Civil Mains 2020',
+    year: 2020,
+    shift: 'Technical Mains Paper',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-102', 'q-104', 'q-106'],
+  },
+  {
+    id: 'pyq-sscje-2020',
+    examTargetId: 'ssc_je',
+    title: 'SSC JE (Civil) All India Online Exam 2020 (Shift 1)',
+    year: 2020,
+    shift: 'Shift 1',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-103', 'q-105', 'q-111'],
+  },
+
+  // 2019 Papers (Massive Recruitment Year)
+  {
+    id: 'pyq-pwd-2019',
+    examTargetId: 'maha_pwd',
+    title: 'Maharashtra PWD Civil Junior Engineer Official Paper 2019',
+    year: 2019,
+    shift: 'State Selection Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-103', 'q-105', 'q-108'],
+  },
+  {
+    id: 'pyq-pwd-cea-2019',
+    examTargetId: 'maha_cea',
+    title: 'Maharashtra PWD स्थापत्य अभियांत्रिकी सहाय्यक (CEA) 2019 Paper',
+    year: 2019,
+    shift: 'State Cadre Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-103', 'q-107', 'q-108'],
+  },
+  {
+    id: 'pyq-rrb-2019',
+    examTargetId: 'rrb_je',
+    title: 'RRB Junior Engineer (Civil) Stage-II CBT 2019 (CEN 03/2018)',
+    year: 2019,
+    shift: 'Railway Technical Shift',
+    totalQuestions: 150,
+    durationMinutes: 120,
+    totalMarks: 150,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-102', 'q-104', 'q-107', 'q-111'],
+  },
+  {
+    id: 'pyq-bmc-2019',
+    examTargetId: 'bmc_municipal',
+    title: 'BMC / MCGM Civil Junior Engineer 2019 Official Paper',
+    year: 2019,
+    shift: 'Mumbai Corporation Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-105', 'q-108', 'q-111'],
+  },
+  {
+    id: 'pyq-zp-2019',
+    examTargetId: 'zp_civil',
+    title: 'Zilla Parishad Civil JE District Selection Paper 2019',
+    year: 2019,
+    shift: 'General Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-105', 'q-107'],
+  },
+
+  // 2018 - 2011 Classic Heritage Papers
+  {
+    id: 'pyq-mpsc-2018',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Maharashtra Engineering Services Prelims 2018',
+    year: 2018,
+    shift: 'General Session',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-102', 'q-106'],
+  },
+  {
+    id: 'pyq-mpsc-2017',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Civil Engineering Services Prelims 2017',
+    year: 2017,
+    shift: 'Morning Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-102', 'q-104'],
+  },
+  {
+    id: 'pyq-pwd-2016',
+    examTargetId: 'maha_pwd',
+    title: 'Maharashtra PWD Civil JE Written Exam 2016',
+    year: 2016,
+    shift: 'State Board Written Paper',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 200,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-103', 'q-105'],
+  },
+  {
+    id: 'pyq-mpsc-2015',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Civil Engineering Services Prelims 2015',
+    year: 2015,
+    shift: 'State PSC Shift',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-102', 'q-106'],
+  },
+  {
+    id: 'pyq-rrb-2015',
+    examTargetId: 'rrb_je',
+    title: 'RRB Junior Engineer (Civil) All India CBT 2015',
+    year: 2015,
+    shift: 'Railway Technical Shift',
+    totalQuestions: 150,
+    durationMinutes: 120,
+    totalMarks: 150,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-104', 'q-107'],
+  },
+  {
+    id: 'pyq-mpsc-2013',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Civil Engineering Services Prelims 2013',
+    year: 2013,
+    shift: 'General Session',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-102'],
+  },
+  {
+    id: 'pyq-mpsc-2011',
+    examTargetId: 'mpsc_civil',
+    title: 'MPSC Maharashtra Engineering Services Civil 2011 Heritage Paper',
+    year: 2011,
+    shift: 'General Session',
+    totalQuestions: 100,
+    durationMinutes: 120,
+    totalMarks: 100,
+    hasCbtMode: true,
+    questionIds: ['q-101', 'q-102'],
   },
 ];
 
 export const STUDY_MATERIALS: StudyMaterial[] = [
+  // 0. Flagship Civil Engineering Economics E-Book (अभियांत्रिकी अर्थशास्त्र व प्रकल्प वित्तीय नियोजन)
+  {
+    id: 'mat-engg-economics-master',
+    title: 'अभियांत्रिकी अर्थशास्त्र, प्रकल्प नियोजन व मूल्यांकन (Engineering Economics, Valuation & Project Finance) — MPSC MES व PWD/WRD विशेष मास्टर ई-बुक',
+    subjectId: 'engg_economics',
+    type: 'ebook',
+    pages: 84,
+    fileSize: '6.4 MB',
+    isFree: true,
+    author: 'Er. MH Engineering Services Faculty',
+    readTimeMinutes: 145,
+    highlights: [
+      'Time Value of Money & Cash Flow Diagrams: Single Payment & Uniform Series Compounding Factors',
+      'प्रकल्प मूल्यांकन पद्धती: Net Present Value (NPV), Future Worth व Annual Equivalent Cost',
+      'सार्वजनिक कामांसाठी Benefit-Cost Ratio (BCR / B-C Method): धरणे, रस्ते व जलसंपदा प्रकल्पांचे विश्लेषण',
+      'Internal Rate of Return (IRR) व Payback Period गणना सूत्रे व ट्रिक्स',
+      'Break-Even Analysis (BEP): नफा-तोटा विश्लेषण व सिव्हिल कामांमधील फिक्स आणि व्हेरिएबल कॉस्ट्स',
+      'घसारा पद्धती (Depreciation): Straight Line, Sinking Fund, Declining Balance व Sum-of-the-Years\'-Digits',
+      'मूल्यांकन (Valuation): स्क्रॅप व्हॅल्यू, साल्व्हेज व्हॅल्यू, कॅपिटलाईझ्ड व्हॅल्यू व सिंकिंग फंड',
+      'PWD Schedule of Rates (DSR), ओव्हरहेड्स व कंत्राटी नफा आणि PPP इन्फ्रा मॉडेल्स (BOT, HAM, EPC)',
+    ],
+    chapters: [
+      {
+        id: 'engg-eco-ch1',
+        title: 'धडा १: Time Value of Money (पैशाचे कालमूल्य) व Cash Flow Diagrams',
+        page: 1,
+        summary: 'मुद्दल, व्याजदर, एकरकमी व नियमित हप्त्यांचे चक्रवाढ घटक (Single Payment & Uniform Gradient Series).',
+        content: `### १. पैशाचे कालमूल्य (Time Value of Money):
+आज उपलब्ध असलेल्या ₹१०० चे मूल्य हे भविष्यातील एका वर्षानंतरच्या ₹१०० पेक्षा जास्त असते, कारण आजच्या रकमेवर व्याज (Interest) कमावता येते आणि भविष्यात महागाईमुळे (Inflation) खरेदी क्षमता कमी होते.
+
+#### मुख्य संकल्पना व संज्ञा:
+- **P (Present Worth / Principle):** सुरुवातीची आजची मुद्दल रक्कम.
+- **F (Future Worth):** 'n' कालावधीनंतर मिळणारी एकूण रास.
+- **A (Annual Equivalent / Annuity):** दरवर्षी किंवा ठरावीक मुदतीने भरला जाणारा समान हप्ता.
+- **i (Interest Rate):** प्रति कालावधी व्याजदर (दशांश स्वरूपात, उदा. १०% = ०.१०).
+- **n:** कालावधीची (वर्षांची) संख्या.
+
+#### महत्त्वाची सूत्रे (MPSC MES & PWD वारंवार विचारली जाणारी):
+1. **Single Payment Compound Amount Factor (SPCAF):**
+   \`F = P × (1 + i)^n\`
+2. **Single Payment Present Worth Factor (SPPWF):**
+   \`P = F × (1 + i)^(-n) = F / (1 + i)^n\`
+3. **Equal Payment Series Compound Amount Factor (Sinking Fund):**
+   \`F = A × [((1 + i)^n - 1) / i]\`
+4. **Capital Recovery Factor (CRF - कर्ज हप्ता ठरवण्यासाठी):**
+   \`A = P × [i(1 + i)^n / ((1 + i)^n - 1)]\`
+
+> **💡 MPSC MES परीक्षेसाठी टीप:** जेव्हा \`n\` वर्षे आणि व्याजदर \`i\` दिला असेल, तेव्हा \`Capital Recovery Factor (CRF) = Sinking Fund Factor + i\` हे नाते हमखास विचारले जाते!`,
+        formulas: [
+          'F = P(1 + i)^n',
+          'P = F / (1 + i)^n',
+          'A = P [i(1 + i)^n / ((1 + i)^n - 1)]',
+          'CRF = SFF + i',
+        ],
+      },
+      {
+        id: 'engg-eco-ch2',
+        title: 'धडा २: प्रकल्प मूल्यांकन (Project Appraisal): NPV, BCR व IRR पद्धती',
+        page: 18,
+        summary: 'Net Present Value, Benefit-Cost Ratio (सार्वजनिक प्रकल्पांसाठी अनिवार्य) आणि Internal Rate of Return.',
+        content: `### २. अभियांत्रिकी प्रकल्प मूल्यांकन पद्धती (Methods of Comparison):
+
+#### अ) Net Present Value (NPV - निव्वळ वर्तमान मूल्य):
+- सर्व भविष्यातील मिळकतींचे (Cash Inflows) आजच्या मूल्यात रूपांतर करून त्यातून सुरुवातीची गुंतवणूक (Initial Outflow) वजा केली जाते.
+- सूत्र: \`NPV = PW(Inflows) - PW(Outflows)\`
+- **स्वीकृतीचा नियम:**
+  - जर \`NPV > 0\` असेल तर प्रकल्प आर्थिकदृष्ट्या व्यवहार्य (Profitable) आहे.
+  - दोन पर्यायांमध्ये ज्याचा NPV सर्वाधिक असेल तो निवडला जातो.
+
+#### ब) Benefit-Cost Ratio (BCR / B-C पद्धत - PWD व सिंचनासाठी):
+- सरकारी व सार्वजनिक विकासकामांसाठी (जसे की धरणे, पूल, कालवे) जिथे सामाजिक लाभ महत्त्वाचा असतो, तिथे ही पद्धत वापरली जाते.
+- सूत्र: \`BCR = Present Worth of Benefits / Present Worth of Costs\`
+  - किंवा: \`BCR = (B - O&M Cost) / (Capital Investment + Interest)\`
+- **स्वीकृतीचा नियम:**
+  - जर \`BCR ≥ 1.0\` असेल, तरच प्रकल्पाला तांत्रिक व प्रशासकीय मान्यता (Admin Approval) दिली जाते.
+  - \`BCR < 1.0\` असणारे प्रकल्प तोट्यात असतात.
+
+#### क) Internal Rate of Return (IRR):
+- ज्या डिस्काउंट रेटला प्रकल्पाचा \`NPV = 0\` होतो (किंवा Inflows चे PW = Outflows चे PW होते), त्याला IRR म्हणतात.
+- जर \`IRR > MARR (Minimum Attractive Rate of Return)\`, तर प्रकल्प मान्य केला जातो.`,
+        formulas: [
+          'NPV = Σ [Rt / (1 + i)^t] - C0',
+          'BCR = Total PW of Benefits / Total PW of Costs',
+          'Accept if BCR >= 1.0',
+          'IRR is discount rate where NPV = 0',
+        ],
+      },
+      {
+        id: 'engg-eco-ch3',
+        title: 'धडा ३: Break-Even Analysis (नफा-तोटा समतोल विश्लेषण)',
+        page: 38,
+        summary: 'Fixed Cost, Variable Cost, Contribution Margin व समतोल बिंदू (BEP) काढणे.',
+        content: `### ३. Break-Even Analysis (BEP):
+उत्पादनाचा किंवा बांधकामाचा असा टप्पा जिथे एकूण महसूल (Total Revenue) हा एकूण खर्चाच्या (Total Cost) बरोबर असतो. या टप्प्यावर नफाही नसतो आणि तोटाही नसतो (No Profit, No Loss).
+
+#### खर्चांचे वर्गीकरण:
+1. **स्थिर खर्च (Fixed Cost - FC):** उत्पादनाच्या प्रमाणावर अवलंबून नसणारा खर्च.
+   - उदा. यंत्रसामग्रीची खरेदी किंमत, कचेरीचे भाडे, कायमस्वरूपी इंजिनिअर्सचे वेतन.
+2. **बदलणारा खर्च (Variable Cost - VC):** उत्पादनाच्या किंवा बांधकामाच्या प्रमाणानुसार बदलणारा खर्च.
+   - उदा. सिमेंट, स्टील, रेती, लेबर चार्जेस, इंधन.
+   - एकूण खर्च: \`Total Cost = FC + (VC per unit × Q)\`
+
+#### BEP ची महत्त्वाची सूत्रे:
+- **Break-Even Quantity (BEP इन युनिट्स):**
+  \`Q_bep = FC / (S - V)\`
+  (जिथे S = प्रति युनिट विक्री किंमत, V = प्रति युनिट बदलणारा खर्च)
+  *(S - V याला **Contribution Margin** म्हणतात)*
+- **Break-Even Sales Value (BEP इन रुपये):**
+  \`BEP_sales = FC / (Contribution Margin Ratio)\`
+  \`Contribution Margin Ratio = (S - V) / S\`
+- **Margin of Safety (सुरक्षा मर्यादा):**
+  \`Margin of Safety = प्रत्यक्ष विक्री (Actual Sales) - BEP विक्री\`
+  - सुरक्षा मर्यादा जास्त असल्यास व्यवसायातील जोखीम कमी असते.`,
+        formulas: [
+          'Total Cost = FC + (VC × Q)',
+          'Q_bep = FC / (Selling Price - Variable Cost per unit)',
+          'Contribution Margin = S - V',
+          'Margin of Safety = Actual Sales - BEP Sales',
+        ],
+      },
+      {
+        id: 'engg-eco-ch4',
+        title: 'धडा ४: मालमत्तेचा घसारा (Depreciation) व मूल्यांकन (Valuation)',
+        page: 54,
+        summary: 'सरळ रेषा पद्धत, सिंकिंग फंड पद्धत, घटती शिल्लक पद्धत, स्क्रॅप व्हॅल्यू व कॅपिटलाईझ्ड व्हॅल्यू.',
+        content: `### ४. घसारा (Depreciation) आणि मूल्यांकन:
+बांधकाम, इमारत किंवा यंत्रसामग्री कालांतराने जुनी झाल्यामुळे, झीज झाल्यामुळे व अप्रचलित (Obsolescence) झाल्यामुळे तिच्या मूल्यात होणारी घट म्हणजे **घसारा (Depreciation)**.
+
+#### पारिभाषिक व्याख्या:
+- **स्क्रॅप व्हॅल्यू (Scrap Value - भंगार मूल्य):** उपयुक्त आयुष्य संपल्यावर संपूर्ण इमारत किंवा यंत्र तोडून मिळणाऱ्या सुट्या साहित्याची (उदा. जुने स्टील, लाकूड, विटा) किंमत. तोडण्याचा खर्च वजा केला जातो. हे सामान्यतः मूळ किमतीच्या **१०%** मानले जाते.
+- **साल्व्हेज व्हॅल्यू (Salvage Value):** आयुष्य संपल्यावर यंत्र किंवा इमारत न तोडता (As it is) मिळणारी किंमत.
+- **कॅपिटलाईझ्ड व्हॅल्यू (Capitalized Value):** ठरावीक व्याजदराने मिळणाऱ्या निव्वळ वार्षिक भाड्याएवढी रक्कम मिळवण्यासाठी आज गुंतवावी लागणारी एकूण मुद्दल.
+  - \`Capitalized Value = निव्वळ उत्पन्न (Net Annual Income) × Years Purchase (YP)\`
+  - \`Years Purchase (YP) = 100 / Interest Rate (i%)\`
+
+#### घसारा काढण्याच्या प्रमुख पद्धती (MES & PWD जे विचारतात):
+1. **सरळ रेषा पद्धत (Straight Line Method):**
+   - दरवर्षी समान घसारा गृहीत धरला जातो.
+   - वार्षिक घसारा: \`D = (C - S) / n\`
+   - (C = मूळ किंमत, S = स्क्रॅप मूल्य, n = एकूण उपयुक्त आयुष्य वर्षे)
+2. **सिंकिंग फंड पद्धत (Sinking Fund Method):**
+   - आयुष्य संपल्यावर मालमत्ता बदलण्यासाठी दरवर्षी सिंकिंग फंडात ठरावीक रक्कम चक्रवाढ व्याजाने जमा केली जाते.
+   - वार्षिक हप्ता: \`I = (C - S) × [i / ((1 + i)^n - 1)]\`
+3. **घटती शिल्लक पद्धत (Constant Percentage / Declining Balance Method):**
+   - दरवर्षी सुरुवातीच्या शिल्लक बुक व्हॅल्यूवर ठरावीक टक्केवारीने घसारा कापला जातो.
+   - घसारा दर: \`p = 1 - (S / C)^(1 / n)\`
+   - *टीप: या पद्धतीत स्क्रॅप व्हॅल्यू शून्य असू शकत नाही.*
+4. **Sum-of-the-Years'-Digits (SYD Method):**
+   - सुरुवातीच्या वर्षांमध्ये जास्त घसारा आणि नंतरच्या वर्षांत कमी घसारा कापला जातो.`,
+        formulas: [
+          'D = (C - S) / n  [Straight Line Method]',
+          'I = (C - S) × [i / ((1 + i)^n - 1)]  [Sinking Fund Deposit]',
+          'p = 1 - (S / C)^(1/n)  [Declining Balance Rate]',
+          'Capitalized Value = Net Income × Years Purchase (YP)',
+          'Years Purchase = 1 / i',
+        ],
+      },
+      {
+        id: 'engg-eco-ch5',
+        title: 'धडा ५: PWD Schedule of Rates (DSR), दर विश्लेषण व PPP इन्फ्रास्ट्रक्चर',
+        page: 72,
+        summary: 'DSR दर विश्लेषण, ओव्हरहेड्स, कंत्राटदाराचा नफा आणि BOT, HAM, EPC कंत्राटांचे अर्थशास्त्र.',
+        content: `### ५. बांधकाम दर विश्लेषण व इन्फ्रास्ट्रक्चर मॉडेल्स:
+
+#### दर विश्लेषण (Rate Analysis) चे घटक:
+1. **साहित्याचा खर्च (Material Cost):** मूळ खरेदी किंमत + वाहतूक खर्च (Lead & Lift) + स्थानिक कर.
+2. **मजुरीचा खर्च (Labor Cost):** कुशल (Skilled), अर्धकुशल व अकुशल मजुरांचे PWD प्रमाणित दर.
+3. **यंत्रसामग्री भाडे (Plant & Machinery Charges):** मिक्सर, क्रेन, व्हायब्रेटर इ.
+4. **पाणी व स्वच्छता अधिभार (Water Charges):** कामाच्या एकूण खर्चाच्या **१.५% ते २%**.
+5. **कंत्राटदाराचा नफा व ओव्हरहेड्स (Contractor's Profit & Overheads):** PWD नियमानुसार सामान्यतः **१०% नफा** + **५% ओव्हरहेड्स** धरले जातात.
+6. **कामगार उपकर (Labour Cess):** १% अनिवार्य कामगार कल्याण उपकर.
+
+#### इन्फ्रास्ट्रक्चर प्रकल्प अंमलबजावणी मॉडेल्स:
+- **EPC (Engineering, Procurement, Construction):** संपूर्ण निधी शासनाचा; कंत्राटदार ठरलेल्या मुदतीत काम पूर्ण करतो. विलंब झाल्यास Liquidated Damages (दंड) आकारला जातो.
+- **BOT (Toll / Annuity):** विकासक भांडवल उभारतो, बांधतो, चालवतो (टोल गोळा करतो) आणि २०-३० वर्षांनी शासनाकडे देतो.
+- **HAM (Hybrid Annuity Model):** ४०% रक्कम बांधकामादरम्यान सरकारी हप्ते, ६०% विकासकाची गुंतवणूक. रस्त्यांच्या राष्ट्रीय महामार्ग (NHAI) व महाराष्ट्र राज्य रस्ते विकास महामंडळ (MSRDC) प्रकल्पांत सर्वाधिक यशस्वी मॉडेल!`,
+        formulas: [
+          'Contractor Profit = 10% on Net Cost',
+          'Water Charges = 1.5% to 2%',
+          'Labour Welfare Cess = 1.0%',
+          'HAM Split = 40% Govt Capex + 60% Developer Annuity',
+        ],
+      },
+    ],
+    downloadCount: 7850,
+    publishedDate: '2025-02-25',
+  },
+
+  // 1. Economics E-Book (अर्थशास्त्र)
+  {
+    id: 'mat-economics-mpsc-mes',
+    title: 'भारतीय अर्थव्यवस्था व अर्थशास्त्र — MPSC MES, PWD & ZP विशेष संपूर्ण ई-बुक',
+    subjectId: 'economics_gs',
+    type: 'ebook',
+    pages: 68,
+    fileSize: '5.2 MB',
+    isFree: true,
+    author: 'Er. MH State Academy Experts',
+    readTimeMinutes: 120,
+    highlights: [
+      'राष्ट्रीय उत्पन्न मापन: GDP, GNP, NNP आणि NITI Aayog ची रचना',
+      'सार्वजनिक वित्त: केंद्रीय व महाराष्ट्र अर्थसंकल्प (Budget), राजकोषीय तूट (Fiscal Deficit)',
+      'चलनवाढ (Inflation) व RBI चे पतधोरण (Repo Rate, Reverse Repo, CRR, SLR)',
+      'पायाभूत सुविधा विकास (Infrastructure Financing): HAM मॉडेल, BOT, EPC कंत्राटे',
+      'TCS/IBPS व MPSC परीक्षेत हमखास विचारले जाणारे १०० महत्त्वाचे वस्तुनिष्ठ प्रश्न व उत्तरे',
+    ],
+    chapters: [
+      {
+        id: 'eco-ch1',
+        title: 'धडा १: भारतीय अर्थव्यवस्थेची मूलभूत वैशिष्ट्ये व राष्ट्रीय उत्पन्न',
+        page: 1,
+        summary: 'GDP, GNP, दरडोई उत्पन्न आणि प्राथमिक, द्वितीयक व तृतीयक क्षेत्रांचे योगदान.',
+        content: `### १. भारतीय अर्थव्यवस्थेची वैशिष्ट्ये:
+भारतीय अर्थव्यवस्था ही एक **मिश्र अर्थव्यवस्था (Mixed Economy)** असून ती विकसनशील व जगातील ५ वी सर्वात मोठी अर्थव्यवस्था आहे.
+
+#### महत्त्वाच्या संकल्पना:
+- **GDP (Gross Domestic Product - स्थूल देशांतर्गत उत्पादन):** एका आर्थिक वर्षात देशाच्या भौगोलिक सीमेत उत्पादित झालेल्या सर्व अंतिम वस्तू व सेवांचे बाजारमूल्य.
+  - सूत्र: \`GDP = C + I + G + (X - M)\`
+  - (C = खाजगी उपभोग, I = गुंतवणूक, G = सरकारी खर्च, X = निर्यात, M = आयात)
+- **GNP (Gross National Product):** \`GNP = GDP + निव्वळ परकीय उत्पन्न (NFIA)\`
+- **NNP (Net National Product):** \`NNP = GNP - घसारा (Depreciation)\`
+- **दरडोई उत्पन्न (Per Capita Income):** \`राष्ट्रीय उत्पन्न ÷ एकूण लोकसंख्या\`
+
+#### परीक्षेतील महत्त्वाचे मुद्दे:
+- **नियोजन आयोग (Planning Commission):** स्थापना १५ मार्च १९५० (पहिले अध्यक्ष: पं. जवाहरलाल नेहरू).
+- **नीती आयोग (NITI Aayog):** स्थापना १ जानेवारी २०१५ (NITI = National Institution for Transforming India). पदसिद्ध अध्यक्ष: भारताचे पंतप्रधान.`,
+        formulas: ['GDP = C + I + G + (X - M)', 'NNP = GNP - Depreciation', 'PCI = National Income / Total Population'],
+      },
+      {
+        id: 'eco-ch2',
+        title: 'धडा २: बँकिंग प्रणाली, रिझर्व्ह बँक (RBI) व पतधोरण',
+        page: 18,
+        summary: 'RBI ची कार्ये, मौद्रिक साधने (CRR, SLR, Repo Rate) व महागाई नियंत्रण.',
+        content: `### २. रिझर्व्ह बँक ऑफ इंडिया (RBI):
+- **स्थापना:** १ एप्रिल १९३५ (हिल्टन यंग कमिशनच्या शिफारशीनुसार, RBI Act 1934).
+- **राष्ट्रीयीकरण:** १ जानेवारी १९४९.
+- **मुख्यालय:** मुंबई (महाराष्ट्राची आर्थिक राजधानी).
+
+#### परिमाणात्मक पत नियंत्रणाची साधने (Quantitative Tools):
+1. **रेपो रेट (Repo Rate):** ज्या दराने RBI व्यापारी बँकांना अल्पमुदतीचे कर्ज देते. रेपो रेट वाढवल्यास बाजारातील पैशांचा पुरवठा कमी होऊन महागाई नियंत्रणात येते.
+2. **रिव्हर्स रेपो रेट (Reverse Repo Rate):** व्यापारी बँका ज्या दराने आपले अतिरिक्त पैसे RBI कडे ठेवतात.
+3. **रोख राखीव प्रमाण (CRR - Cash Reserve Ratio):** बँकांना त्यांच्या एकूण ठेवींपैकी (NDTL) ठरावीक हिस्सा रोख स्वरूपात RBI कडे ठेवावा लागतो.
+4. **वैधानिक तरलता प्रमाण (SLR - Statutory Liquidity Ratio):** बँकांना स्वतःकडे सोने, सरकारी रोखे किंवा रोखीच्या स्वरूपात ठेवावा लागणारा हिस्सा.`,
+        formulas: ['Repo Rate vs Money Supply: Inverse Relationship', 'Real Interest Rate = Nominal Rate - Inflation'],
+      },
+      {
+        id: 'eco-ch3',
+        title: 'धडा ३: सार्वजनिक वित्त व सिव्हिल इन्फ्रास्ट्रक्चर प्रकल्प फायनान्सिंग',
+        page: 36,
+        summary: 'सरकारी बजेट, जीएसटी (GST) आणि पायाभूत सुविधा बांधकामासाठीचे EPC, BOT, HAM मॉडेल्स.',
+        content: `### ३. इन्फ्रास्ट्रक्चर फायनान्सिंग मॉडेल्स (सिव्हिल इंजिनिअर्ससाठी विशेष):
+महाराष्ट्र PWD, MSRDC, NHAI आणि जलसंपदा विभागातील प्रकल्पांसाठी खालील मॉडेल्स वापरले जातात:
+1. **EPC (Engineering, Procurement, and Construction):**
+   - संपूर्ण खर्च शासन करते. ठेकेदार फक्त डिझाईन आणि बांधकाम करतो. (कमी जोखीम).
+2. **BOT (Build, Operate, and Transfer):**
+   - खाजगी विकासक स्वतःच्या पैशाने रस्ता किंवा पूल बांधतो, टोल वसुली करतो आणि कालावधी संपल्यावर शासनाकडे हस्तांतरित करतो.
+3. **HAM (Hybrid Annuity Model):**
+   - ४०% रक्कम शासन बांधकामादरम्यान हप्त्यांमध्ये देते, आणि उर्वरित ६०% रक्कम विकासक गुंतवतो ज्याची परतफेड शासन एन्युइटी (हप्त्यांच्या) स्वरूपात करते. (सध्या समृद्धी महामार्ग व PWD प्रकल्पांत मोठ्या प्रमाणावर वापर).`,
+      },
+    ],
+    downloadCount: 4890,
+    publishedDate: '2025-02-10',
+  },
+
+  // 2. Environment & Ecology E-Book (पर्यावरण व परिसंस्था)
+  {
+    id: 'mat-env-pwd-wrd-guide',
+    title: 'पर्यावरण, परिसंस्था व EIA मार्गदर्शिका — PWD, WRD व MPSC साठी विशेष ई-बुक',
+    subjectId: 'environment_ecology',
+    type: 'ebook',
+    pages: 54,
+    fileSize: '4.6 MB',
+    isFree: true,
+    author: 'Er. MH Environmental Cell',
+    readTimeMinutes: 95,
+    highlights: [
+      'पर्यावरण संरक्षण कायदा १९८६ (EPA 1986) व हरित लवाद (NGT) कलम व तरतुदी',
+      'Environmental Impact Assessment (EIA): धरणे, महामार्ग व इमारतींसाठी परवानग्या',
+      'जल व वायू प्रदूषण नियंत्रण: CPCB व MPCB निकष (BOD, COD, DO, PM2.5, PM10)',
+      'घनकचरा व्यवस्थापन (Solid Waste Management Rules 2016) व लँडफिल डिझाईन',
+      'हवामान बदल: पॅरिस करार, क्योटो प्रोटोकॉल व नेट झिरो कार्बन उद्दिष्टे',
+    ],
+    chapters: [
+      {
+        id: 'env-ch1',
+        title: 'धडा १: परिसंस्था, जैवविविधता व पर्यावरण कायदे',
+        page: 1,
+        summary: 'Ecosystem चे घटक, अन्नसाखळी, जैवविविधता हॉटस्पॉट्स व EPA 1986 कायदा.',
+        content: `### पर्यावरण संरक्षण कायदा १९८६ (Environment Protection Act 1986):
+- **पार्श्वभूमी:** २-३ डिसेंबर १९८४ रोजी घडलेल्या 'भोपाळ वायू दुर्घटनेनंतर' (मिथाईल आयसोसायनाईट - MIC गळती) हा सर्वंकष कायदा अस्तित्वात आला.
+- **अंमलबजावणी:** १९ नोव्हेंबर १९८६.
+- **घटनेतील आधार:** कलम ४८(A) [मार्गदर्शक तत्वे] आणि कलम ५१(A)(g) [मूलभूत कर्तव्ये].
+
+#### भारतातील जैवविविधता हॉटस्पॉट्स:
+1. **पश्चिम घाट (Western Ghats - सह्याद्री):** महाराष्ट्रातील अत्यंत समृद्ध हॉटस्पॉट (UNESCO वारसा स्थळ).
+2. **पूर्व हिमालय (Eastern Himalayas)**
+3. **इंडो-बर्मा (Indo-Burma)**
+4. **सुंडालँड (Sundaland)**`,
+      },
+      {
+        id: 'env-ch2',
+        title: 'धडा २: Environmental Impact Assessment (EIA) for Civil Projects',
+        page: 22,
+        summary: 'सिव्हिल प्रकल्पांसाठी पर्यावरण प्रभाव मूल्यांकन प्रक्रिया व जनसुनावणी.',
+        content: `### EIA ची पायरीवार प्रक्रिया (Step-by-step EIA Workflow):
+1. **Screening (चाळणी):** प्रकल्पाची वर्गवारी (Category A - केंद्र सरकार MoEFCC मंजुरी; Category B - राज्यस्तरीय SEIAA मंजुरी).
+2. **Scoping (कक्षा निश्चिती):** ToR (Terms of Reference) तयार करणे.
+3. **Baseline Data Collection:** हवा, पाणी, जमीन, ध्वनी आणि परिसंस्थेची मूळ आकडेवारी गोळा करणे.
+4. **Impact Prediction:** बांधकामामुळे व नंतर होणाऱ्या परिणामांचे अंदाज बांधणे.
+5. **Public Hearing (जनसुनावणी):** स्थानिक नागरिकांच्या हरकती व सूचना नोंदवून घेणे.
+6. **Environmental Management Plan (EMP):** प्रदूषण कमी करण्यासाठी उपाययोजना.`,
+      },
+    ],
+    downloadCount: 3620,
+    publishedDate: '2025-02-14',
+  },
+
+  // 3. Indian Polity & Governance E-Book (भारतीय राज्यघटना व स्थानिक संस्था)
+  {
+    id: 'mat-polity-zp-pwd-handbook',
+    title: 'भारतीय राज्यघटना, पंचायत राज व जिल्हा परिषद अधिनियम — संपूर्ण ई-नोट्स',
+    subjectId: 'indian_polity',
+    type: 'topper_handwritten_notes',
+    pages: 60,
+    fileSize: '4.8 MB',
+    isFree: true,
+    author: 'Er. MH Toppers Notes',
+    readTimeMinutes: 110,
+    highlights: [
+      'राज्यघटनेची निर्मिती, सरनामा व महत्त्वाची कलमे (कलम १२ ते ५१A)',
+      '७३ वी व ७४ वी घटनादुरुस्ती: ग्रामपंचायत, पंचायत समिती, जिल्हा परिषद व महानगरपालिका',
+      'महाराष्ट्र जिल्हा परिषद व पंचायत समिती अधिनियम १९६१ मधील महत्त्वाची कलमे',
+      'राज्यपाल, मुख्यमंत्री, महाराष्ट्र विधानसभा, विधानपरिषद व लोकसेवा हक्क कायदा (RTS)',
+      'ZP Civil JE व CEA परीक्षेत विचारले गेलेले विगत वर्षांचे १०० प्रश्न',
+    ],
+    chapters: [
+      {
+        id: 'pol-ch1',
+        title: 'धडा १: राज्यघटनेची निर्मिती व मूलभूत हक्क (कलम १२ ते ३५)',
+        page: 1,
+        summary: 'घटना समिती, मसुदा समिती, सरनामा आणि ६ मूलभूत हक्क.',
+        content: `### घटना समिती व मसुदा समिती:
+- **पहिली बैठक:** ९ डिसेंबर १९४६ (तात्पुरते अध्यक्ष: डॉ. सच्चिदानंद सिन्हा).
+- **स्थायी अध्यक्ष:** डॉ. राजेंद्र प्रसाद (११ डिसेंबर १९४६).
+- **मसुदा समिती (Drafting Committee):** २९ ऑगस्ट १९४७ रोजी स्थापना. **अध्यक्ष: डॉ. बाबासाहेब आंबेडकर (भारतीय राज्यघटनेचे शिल्पकार).**
+- **संविधान स्वीकृती:** २६ नोव्हेंबर १९४९ (संविधान दिन).
+- **अंमलबजावणी:** २६ जानेवारी १९५० (प्रजासत्ताक दिन).
+
+#### ६ मूलभूत हक्क (Fundamental Rights):
+1. **समानतेचा हक्क:** कलम १४ ते १८ (कलम १७: अस्पृश्यता निवारण).
+2. **स्वातंत्र्याचा हक्क:** कलम १९ ते २२ (कलम २१: जीविताचे व वैयक्तिक स्वातंत्र्याचे रक्षण).
+3. **शोषणाविरुद्धचा हक्क:** कलम २३ व २४ (बालकामगार बंदी).
+4. **धर्मस्वातंत्र्याचा हक्क:** कलम २५ ते २८.
+5. **सांस्कृतिक व शैक्षणिक हक्क:** कलम २९ व ३०.
+6. **घटनात्मक उपायांचा हक्क:** कलम ३२ (डॉ. आंबेडकरांच्या मते 'संविधानाचा आत्मा').`,
+      },
+      {
+        id: 'pol-ch2',
+        title: 'धडा २: पंचायत राज व महाराष्ट्र जिल्हा परिषद रचना (७३ वी घटनादुरुस्ती)',
+        page: 25,
+        summary: 'त्रिस्तरीय पंचायत राज, जिल्हा परिषद बांधकाम समिती व मुख्य कार्यकारी अधिकारी (CEO).',
+        content: `### ७३ वी घटनादुरुस्ती कायदा १९९२:
+- **अनुसूची ११:** पंचायत राजसाठी २९ विषयांची यादी.
+- **त्रिस्तरीय रचना:**
+  1. जिल्हा स्तर: **जिल्हा परिषद (ZP)**
+  2. तालुका स्तर: **पंचायत समिती (PS)**
+  3. गाव स्तर: **ग्रामपंचायत (GP)**
+
+#### ZP मधील सिव्हिल इंजिनिअरिंग प्रशासन:
+- **जिल्हा परिषद बांधकाम समिती:** सभापती व सदस्य.
+- **कार्यकारी अभियंता (Executive Engineer - EE PWD/ZP):** बांधकाम विभागाचे प्रशासकीय व तांत्रिक प्रमुख.
+- **उपअभियंता (Sub-Divisional Engineer - SDE):** तालुका पातळीवरील कामांचे नियंत्रण.
+- **कनिष्ठ अभियंता (JE) व स्थापत्य अभियांत्रिकी सहाय्यक (CEA):** प्रत्यक्ष जागेवर रस्त्यांचे, पुलांचे व शाळांच्या इमारतींचे अंदाजपत्रक (Estimate) व मोजमाप नोंदवणे (Measurement Book - MB भरणे).`,
+      },
+    ],
+    downloadCount: 5140,
+    publishedDate: '2025-02-18',
+  },
+
+  // 4. Marathi Grammar E-Book (मराठी व्याकरण)
+  {
+    id: 'mat-marathi-grammar-master',
+    title: 'मराठी व्याकरण संपूर्ण ई-बुक — TCS & IBPS पॅटर्ननुसार ५० नियम व शब्दसंग्रह',
+    subjectId: 'marathi_grammar',
+    type: 'ebook',
+    pages: 72,
+    fileSize: '5.9 MB',
+    isFree: true,
+    author: 'Er. MH Language Cell',
+    readTimeMinutes: 130,
+    highlights: [
+      'प्रयोग विचार: कर्तरी, कर्मणी व भावे प्रयोगाची अचूक ओळखण्याची १-सेकंद ट्रिक',
+      'समास: अव्ययीभाव, तत्पुरुष, द्वंद्व आणि बहुव्रीहि समासाचे विश्लेषण व उदाहरणे',
+      'काळ व काळांचे प्रकार, वाक्य रूपांतर व शुद्धलेखनाचे नियम',
+      '५००+ समानार्थी, ५००+ विरुद्धार्थी शब्द व वारंवार विचारल्या जाणाऱ्या म्हणी व वाक्प्रचार',
+      'Maha PWD, WRD, ZP आणि BMC परीक्षेत आलेले सर्व जुने प्रश्न',
+    ],
+    chapters: [
+      {
+        id: 'mar-ch1',
+        title: 'धडा १: प्रयोग विचार (Voice in Marathi) — ओळखण्याच्या शॉर्टकट ट्रिक्स',
+        page: 1,
+        summary: 'कर्तरी, कर्मणी व भावे प्रयोग क्षणात कसे ओळखायचे.',
+        content: `### प्रयोगाचे मुख्य ३ प्रकार:
+
+#### १. कर्तरी प्रयोग (Subjective):
+- **नियम:** कर्त्याला कोणताही **प्रत्यय नसतो** (कर्ता प्रथमा विभक्तीत असतो).
+- क्रियापद कर्त्याच्या लिंग, वचनानुसार बदलते.
+- *उदा.* तो आंबा खातो / ती आंबा खाते / ते आंबा खातात.
+
+#### २. कर्मणी प्रयोग (Objective):
+- **नियम:** कर्त्याला **प्रत्यय असतो**, पण कर्माला **प्रत्यय नसतो** (कर्म प्रथमा विभक्तीत असते).
+- क्रियापद कर्माच्या लिंग, वचनानुसार बदलते. क्रियापद बहुधा भूतकाळी असते.
+- *उदा.* रामाने आंबा खाल्ला / रामाने चिंच खाल्ली.
+
+#### ३. भावे प्रयोग (Impersonal):
+- **नियम:** कर्त्याला आणि कर्माला **दोन्हींनाही प्रत्यय असतो**.
+- क्रियापद नेहमी तृतीय पुरुषी, नपुंसकलिंगी, एकवचनी (ए-कारान्त) असते.
+- *उदा.* शिक्षकांनी विद्यार्थ्यांना शिकवले / रामाने रावणास मारले.`,
+      },
+      {
+        id: 'mar-ch2',
+        title: 'धडा २: समास विचार (Compound Words)',
+        page: 24,
+        summary: 'अव्ययीभाव, तत्पुरुष, द्वंद्व व बहुव्रीहि समास ओळखण्याच्या सोप्या पद्धती.',
+        content: `### समासाचे ४ मुख्य प्रकार:
+1. **अव्ययीभाव समास (पहिले पद महत्त्वाचे):**
+   - उदा. यथाशक्ती (शक्तीप्रमाणे), प्रतिदिन (प्रत्येक दिवशी), आजन्म (जन्मापासून).
+2. **तत्पुरुष समास (दुसरे पद महत्त्वाचे):**
+   - उदा. राजपुत्र (राजाचा पुत्र), ग्रंथालय (ग्रंथांचे आलय), पोळपाट (पोळीसाठी पाट).
+3. **द्वंद्व समास (दोन्ही पदे महत्त्वाची):**
+   - उदा. आई-वडील (आई आणि वडील - इतरेतर द्वंद्व), भाजीपाला (भाजीपाला वगैरे - समाहार द्वंद्व).
+4. **बहुव्रीहि समास (दोन्ही पदांशिवाय तिसऱ्याच पदाचा बोध):**
+   - उदा. गजानन (गजाचे आहे आनन ज्याला असा तो - गणपती), नीलकंठ (निळा आहे कंठ ज्याचा तो - शंकर).`,
+      },
+    ],
+    downloadCount: 6420,
+    publishedDate: '2025-02-22',
+  },
+
+  // 5. RCC & IS 456 Technical E-Book
   {
     id: 'mat-is456-compendium',
     title: 'IS 456:2000 Comprehensive Formula & Clause Handbook for AE/JE',
     subjectId: 'rcc_concrete',
-    type: 'is_code_summary',
+    type: 'ebook',
     pages: 42,
     fileSize: '3.8 MB',
     isFree: true,
+    author: 'Er. MH Structural Faculty',
+    readTimeMinutes: 80,
     highlights: [
       'Cl 26.5.1.1 Minimum & Maximum Ast limits in beams and slabs',
       'Cl 38.1 Stress-strain block parameters (0.36 fck b xu, max)',
@@ -1372,14 +2460,18 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     downloadCount: 6840,
     publishedDate: '2025-01-05',
   },
+
+  // 6. Steel Structures IS 800 E-Book
   {
     id: 'mat-is800-steel-handbook',
     title: 'IS 800:2007 Steel Design Code Provisions & Table 3 Slenderness Limits',
     subjectId: 'steel_structures',
-    type: 'is_code_summary',
+    type: 'ebook',
     pages: 36,
     fileSize: '2.9 MB',
     isFree: true,
+    author: 'Er. MH Structural Faculty',
+    readTimeMinutes: 75,
     highlights: [
       'Table 3: Maximum slenderness ratio limits (180, 250, 300, 350, 400)',
       'Partial safety factors γm0 = 1.10, γm1 = 1.25, γmb = 1.25',
@@ -1389,6 +2481,8 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     downloadCount: 5120,
     publishedDate: '2025-01-12',
   },
+
+  // 7. SOM Formula Sheet
   {
     id: 'mat-som-formulas',
     title: 'Strength of Materials (SOM) — High-Yield Formula Sheet with SFD/BMD',
@@ -1397,6 +2491,8 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     pages: 18,
     fileSize: '1.9 MB',
     isFree: true,
+    author: 'Er. MH Faculty',
+    readTimeMinutes: 45,
     highlights: [
       'All 14 standard beam load cases for deflection & slopes (Macaulay / Moment-Area)',
       'Torsion equation (T/J = τ/R = Gθ/L) with polar modulus',
@@ -1406,6 +2502,8 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     downloadCount: 8900,
     publishedDate: '2025-01-18',
   },
+
+  // 8. Highway IRC Standards
   {
     id: 'mat-irc-highway-standards',
     title: 'IRC Geometric Design Standards Summary (IRC:73, IRC:37, IRC:86)',
@@ -1414,6 +2512,8 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     pages: 28,
     fileSize: '2.4 MB',
     isFree: false,
+    author: 'Er. MH Highway Cell',
+    readTimeMinutes: 60,
     highlights: [
       'Stopping Sight Distance (SSD) = 0.278Vt + V²/(254f)',
       'Super-elevation design steps and transition curve length formulas',
@@ -1423,6 +2523,8 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     downloadCount: 4230,
     publishedDate: '2025-01-20',
   },
+
+  // 9. Geotechnical Revision Matrix
   {
     id: 'mat-geotech-cheat-sheet',
     title: 'Soil Mechanics & Foundation Engineering Quick Revision Matrix',
@@ -1431,6 +2533,8 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     pages: 32,
     fileSize: '3.1 MB',
     isFree: true,
+    author: 'Er. MH Geotech Wing',
+    readTimeMinutes: 65,
     highlights: [
       'Interrelationships: Se = wG, γsat = (G + e)γw / (1 + e), γd = Gγw / (1 + e)',
       'Terzaghi bearing capacity equation (qu = cNc + qNq + 0.5γBNγ)',
@@ -1440,6 +2544,8 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     downloadCount: 7600,
     publishedDate: '2025-01-25',
   },
+
+  // 10. CPM PERT
   {
     id: 'mat-cpm-pert-summary',
     title: 'CPM / PERT & Construction Management Formula Pocket Guide',
@@ -1448,6 +2554,8 @@ export const STUDY_MATERIALS: StudyMaterial[] = [
     pages: 14,
     fileSize: '1.2 MB',
     isFree: true,
+    author: 'Er. MH Construction Management',
+    readTimeMinutes: 35,
     highlights: [
       'PERT expected duration te = (to + 4tm + tp) / 6',
       'Standard deviation σ = (tp - to) / 6, Variance V = σ²',
@@ -1583,7 +2691,7 @@ export const VIDEO_LECTURES: VideoLecture[] = [
     subjectId: 'rcc_concrete',
     instructor: 'Er. SP Sir (Ex-Executive Engineer, MPSC Topper)',
     duration: '2 hr 45 min',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+    embedUrl: 'in-app://player/rcc-is456-marathon',
     thumbnailUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb180c5f2?w=600&auto=format&fit=crop&q=80',
     isFree: true,
     viewsCount: 34200,
@@ -1600,7 +2708,7 @@ export const VIDEO_LECTURES: VideoLecture[] = [
     subjectId: 'som',
     instructor: 'Er. SP Sir',
     duration: '1 hr 32 min',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+    embedUrl: 'in-app://player/som-sfd-bmd-tricks',
     thumbnailUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
     isFree: true,
     viewsCount: 28900,
@@ -1616,7 +2724,7 @@ export const VIDEO_LECTURES: VideoLecture[] = [
     subjectId: 'steel_structures',
     instructor: 'Er. SP Sir',
     duration: '1 hr 48 min',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+    embedUrl: 'in-app://player/steel-is800-connections',
     thumbnailUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80',
     isFree: false,
     viewsCount: 15400,
@@ -1633,7 +2741,7 @@ export const VIDEO_LECTURES: VideoLecture[] = [
     subjectId: 'surveying',
     instructor: 'Er. SP Sir',
     duration: '1 hr 20 min',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+    embedUrl: 'in-app://player/surveying-theodolite-curves',
     thumbnailUrl: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80',
     isFree: true,
     viewsCount: 19800,

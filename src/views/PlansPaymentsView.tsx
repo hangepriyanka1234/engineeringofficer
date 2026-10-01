@@ -29,11 +29,13 @@ import { MyPurchasesModal } from '../components/MyPurchasesModal';
 interface PlansPaymentsViewProps {
   profile: StudentProfile;
   onPlanUpgraded: () => void;
+  setActiveView?: (view: string) => void;
 }
 
 export const PlansPaymentsView: React.FC<PlansPaymentsViewProps> = ({
   profile,
   onPlanUpgraded,
+  setActiveView,
 }) => {
   const [plans, setPlans] = useState<PlanRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,6 +64,9 @@ export const PlansPaymentsView: React.FC<PlansPaymentsViewProps> = ({
 
   // My purchases modal
   const [showMyPurchases, setShowMyPurchases] = useState<boolean>(false);
+
+  // Razorpay Merchant Compliance Policy Modals
+  const [activePolicyModal, setActivePolicyModal] = useState<'terms' | 'privacy' | 'refund' | 'contact' | null>(null);
 
   useEffect(() => {
     loadPlans();
@@ -589,6 +594,240 @@ export const PlansPaymentsView: React.FC<PlansPaymentsViewProps> = ({
         onClose={() => setShowMyPurchases(false)}
         profile={profile}
       />
+
+      {/* Razorpay Merchant Compliance Footer */}
+      <div className="mt-12 pt-8 border-t border-slate-200 text-center space-y-4">
+        <div className="p-4 bg-sky-50/80 rounded-2xl border border-sky-200 max-w-3xl mx-auto text-xs text-slate-700 space-y-1">
+          <div className="font-bold text-sky-950 flex items-center justify-center space-x-2">
+            <Building2 className="w-4 h-4 text-sky-700" />
+            <span>Operated & Billed by PRIME MULTI SERVICES AND SUPPLIERS</span>
+          </div>
+          <p className="text-[11px] text-slate-600">
+            Registered under Maharashtra Shops and Establishments Act & MSME Udyam Registration (Govt. of India) • Official Payment Gateway Partner: Razorpay
+          </p>
+        </div>
+
+        <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 text-xs text-slate-600 font-semibold">
+          <button
+            onClick={() => (setActiveView ? setActiveView('terms-conditions') : setActivePolicyModal('terms'))}
+            className="hover:text-sky-700 transition-colors cursor-pointer underline"
+          >
+            Terms & Conditions
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => (setActiveView ? setActiveView('privacy-policy') : setActivePolicyModal('privacy'))}
+            className="hover:text-sky-700 transition-colors cursor-pointer underline"
+          >
+            Privacy Policy
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => (setActiveView ? setActiveView('refund-policy') : setActivePolicyModal('refund'))}
+            className="hover:text-sky-700 transition-colors cursor-pointer underline"
+          >
+            Cancellation & Refund Policy
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => (setActiveView ? setActiveView('shipping-policy') : setActivePolicyModal('shipping'))}
+            className="hover:text-sky-700 transition-colors cursor-pointer underline"
+          >
+            Shipping Policy
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => (setActiveView ? setActiveView('contact-us') : setActivePolicyModal('contact'))}
+            className="hover:text-sky-700 transition-colors cursor-pointer underline"
+          >
+            Contact & Support
+          </button>
+        </div>
+        <p className="text-[11px] text-slate-400">
+          © 2026 PRIME MULTI SERVICES AND SUPPLIERS. All payments are securely tokenized and processed via Razorpay with 256-bit bank-grade SSL encryption.
+        </p>
+      </div>
+
+      {/* Policy Details Modal */}
+      {activePolicyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 max-h-[85vh] overflow-y-auto space-y-4 text-slate-800 text-xs relative">
+            <button
+              onClick={() => setActivePolicyModal(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {activePolicyModal === 'terms' && (
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 text-sky-600 font-mono font-bold text-[10px] uppercase">
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>PRIME MULTI SERVICES AND SUPPLIERS</span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">
+                  Terms & Conditions — Engineering Officer BY MH
+                </h3>
+                <p>By purchasing subscriptions or mock test passes on <strong>Engineering Officer BY MH</strong>, operated by <strong>PRIME MULTI SERVICES AND SUPPLIERS</strong> (Registered under Maharashtra Shop Act & Udyam MSME), you agree to the following terms:</p>
+                <ul className="list-disc pl-5 space-y-1.5 text-slate-600">
+                  <li><strong>Account Usage:</strong> Subscriptions are single-aspirant licenses strictly for individual competitive examination study. Account sharing is strictly prohibited.</li>
+                  <li><strong>Intellectual Property:</strong> All MCQs, explanations, mock test questions, and engineering calculators are proprietary assets of PRIME MULTI SERVICES AND SUPPLIERS.</li>
+                  <li><strong>Payment Gateway:</strong> All payments are securely processed by Razorpay. Entitlements are unlocked instantaneously upon payment verification.</li>
+                  <li><strong>Jurisdiction:</strong> All transactions and disputes are governed by Indian law subject to Maharashtra jurisdiction.</li>
+                </ul>
+                {setActiveView && (
+                  <button
+                    onClick={() => {
+                      setActivePolicyModal(null);
+                      setActiveView('terms-conditions');
+                    }}
+                    className="mt-2 text-sky-700 font-bold hover:underline"
+                  >
+                    View Full Dedicated Terms & Conditions Page →
+                  </button>
+                )}
+              </div>
+            )}
+
+            {activePolicyModal === 'privacy' && (
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 text-sky-600 font-mono font-bold text-[10px] uppercase">
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>PRIME MULTI SERVICES AND SUPPLIERS</span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">
+                  Privacy Policy & Data Security
+                </h3>
+                <p>We respect candidate privacy and are committed to safeguarding personal information:</p>
+                <ul className="list-disc pl-5 space-y-1.5 text-slate-600">
+                  <li><strong>Information Collected:</strong> Candidate name, email address, mobile number, and test performance metrics.</li>
+                  <li><strong>Payment Protection:</strong> We do NOT store card numbers, CVV, or UPI PINs. All financial transactions are handled securely by Razorpay (PCI-DSS Level 1 compliant).</li>
+                  <li><strong>Supabase Data Architecture:</strong> Scalable PostgreSQL data storage ensuring high reliability with zero reading limits.</li>
+                  <li><strong>Zero Commercial Selling:</strong> Candidate data is never traded or shared with external advertising syndicates.</li>
+                </ul>
+                {setActiveView && (
+                  <button
+                    onClick={() => {
+                      setActivePolicyModal(null);
+                      setActiveView('privacy-policy');
+                    }}
+                    className="mt-2 text-sky-700 font-bold hover:underline"
+                  >
+                    View Full Dedicated Privacy Policy Page →
+                  </button>
+                )}
+              </div>
+            )}
+
+            {activePolicyModal === 'refund' && (
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 text-sky-600 font-mono font-bold text-[10px] uppercase">
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>PRIME MULTI SERVICES AND SUPPLIERS</span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">
+                  Cancellation & Refund Policy (Strictly English Policy)
+                </h3>
+                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-950 space-y-1">
+                  <div className="font-bold">No Refund Once Activated:</div>
+                  <p>
+                    All plans, test series, and study materials are digital services delivered instantaneously upon payment authorization. Therefore, <strong>once a digital plan is activated, NO REFUNDS, NO CANCELLATIONS, AND NO EXCHANGES WILL BE ISSUED UNDER ANY CIRCUMSTANCES.</strong>
+                  </p>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 space-y-1">
+                  <div className="font-bold text-slate-900">Accidental Duplicate / Double Payments:</div>
+                  <p>
+                    If a candidate is charged more than once for the same transaction due to a network glitch or gateway timeout, report the issue with Razorpay Payment IDs to <strong>gitevijay123@gmail.com</strong>.
+                  </p>
+                  <p>
+                    After verification within 24 to 48 hours, the duplicate amount will be refunded directly back to the original payment source within <strong>3 to 5 business days</strong>.
+                  </p>
+                </div>
+                {setActiveView && (
+                  <button
+                    onClick={() => {
+                      setActivePolicyModal(null);
+                      setActiveView('refund-policy');
+                    }}
+                    className="mt-2 text-sky-700 font-bold hover:underline"
+                  >
+                    View Full Dedicated Refund Policy Page →
+                  </button>
+                )}
+              </div>
+            )}
+
+            {activePolicyModal === 'shipping' && (
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 text-sky-600 font-mono font-bold text-[10px] uppercase">
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>PRIME MULTI SERVICES AND SUPPLIERS</span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">
+                  Digital Shipping & Delivery Policy
+                </h3>
+                <p>All products and services provided on this platform are 100% digital goods and online educational services:</p>
+                <ul className="list-disc pl-5 space-y-1.5 text-slate-600">
+                  <li><strong>Instantaneous Delivery:</strong> Test series passes and question bank access are unlocked electronically within 0 to 60 seconds of Razorpay payment confirmation.</li>
+                  <li><strong>No Physical Shipping:</strong> No physical parcels, printed books, or couriers are involved; zero shipping fees are charged.</li>
+                </ul>
+                {setActiveView && (
+                  <button
+                    onClick={() => {
+                      setActivePolicyModal(null);
+                      setActiveView('shipping-policy');
+                    }}
+                    className="mt-2 text-sky-700 font-bold hover:underline"
+                  >
+                    View Full Dedicated Shipping Policy Page →
+                  </button>
+                )}
+              </div>
+            )}
+
+            {activePolicyModal === 'contact' && (
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2 text-sky-600 font-mono font-bold text-[10px] uppercase">
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>PRIME MULTI SERVICES AND SUPPLIERS</span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">
+                  Contact Us & Merchant Details
+                </h3>
+                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5 font-mono text-[11px]">
+                  <div><strong>Operating Business Entity:</strong> PRIME MULTI SERVICES AND SUPPLIERS</div>
+                  <div><strong>Platform:</strong> Engineering Officer BY MH</div>
+                  <div><strong>Licensing:</strong> Maharashtra Shop & Establishment Act | Udyam MSME Registered</div>
+                  <div><strong>Support Email:</strong> gitevijay123@gmail.com</div>
+                  <div><strong>Support Helpline:</strong> +91 93708 72123</div>
+                  <div><strong>Operating Address:</strong> Maharashtra, India</div>
+                  <div><strong>Working Hours:</strong> Monday – Saturday (10:00 AM – 6:00 PM IST)</div>
+                </div>
+                {setActiveView && (
+                  <button
+                    onClick={() => {
+                      setActivePolicyModal(null);
+                      setActiveView('contact-us');
+                    }}
+                    className="mt-2 text-sky-700 font-bold hover:underline"
+                  >
+                    View Full Dedicated Contact Page →
+                  </button>
+                )}
+              </div>
+            )}
+
+            <div className="pt-3 border-t border-slate-100 flex justify-end">
+              <button
+                onClick={() => setActivePolicyModal(null)}
+                className="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

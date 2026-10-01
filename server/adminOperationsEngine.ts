@@ -40,7 +40,7 @@ export class ServerAdminOperationsEngine {
       actorRole: 'super_admin',
       action: 'UPDATE_ENTITLEMENT_TIER',
       targetType: 'student',
-      targetId: 'hangepriyanka1234@gmail.com',
+      targetId: 'gitevijay123@gmail.com',
       details: 'Upgraded student to Officer Master tier with lifetime access',
       ipAddress: '49.36.120.45',
       timestamp: new Date(Date.now() - 7200000).toISOString(),
@@ -48,7 +48,7 @@ export class ServerAdminOperationsEngine {
     },
     {
       id: 'audit-002',
-      actorEmail: 'sp.officer.admin@enggby sp.com',
+      actorEmail: 'sp.officer.admin@enggbysp.com',
       actorRole: 'super_admin',
       action: 'PUBLISH_RECRUITMENT_NOTICE',
       targetType: 'recruitment',
@@ -62,11 +62,11 @@ export class ServerAdminOperationsEngine {
 
   private static students: Map<string, ManagedStudent> = new Map([
     [
-      'hangepriyanka1234@gmail.com',
+      'gitevijay123@gmail.com',
       {
         id: 'std-001',
-        name: 'Priyanka Hange',
-        email: 'hangepriyanka1234@gmail.com',
+        name: 'Vijay Gite',
+        email: 'gitevijay123@gmail.com',
         tier: 'master',
         targetExams: ['maha_pwd', 'maha_wrd', 'mpsc_mes'],
         totalQuestionsSolved: 342,

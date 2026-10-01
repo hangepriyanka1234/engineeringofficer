@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { RecruitmentNotice } from '../types';
 import { ExamBadge } from './common/ExamBadge';
+import { LinkVerificationService } from '../services/linkVerificationService';
 
 interface RecruitmentDetailModalProps {
   notice: RecruitmentNotice | null;
@@ -386,31 +387,36 @@ export const RecruitmentDetailModal: React.FC<RecruitmentDetailModalProps> = ({
         </div>
 
         {/* Confirmation modal prompt before leaving to apply officially */}
+        {/* Verification Alert Before Outbound Navigation */}
         {showApplyConfirm && (
-          <div className="p-4 bg-amber-100 border-t border-amber-300 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-            <div className="flex items-center space-x-2 text-amber-950">
-              <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0" />
+          <div className="p-4 bg-sky-50 border-t border-sky-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div className="flex items-center space-x-2 text-sky-950">
+              <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
               <span>
-                You are navigating to the official application portal. Always ensure you cross-check eligibility and fee details on the official site.
+                तुम्ही <strong>{notice.deptName}</strong> च्या अधिकृत शासकीय संकेतस्थळावर जात आहात. (SSL Secured & Verified)
               </span>
             </div>
             <div className="flex items-center space-x-2 shrink-0">
               <button
                 onClick={() => setShowApplyConfirm(false)}
-                className="px-3 py-1 bg-white text-slate-700 rounded-md border border-slate-300 font-medium hover:bg-slate-50"
+                className="px-3 py-1.5 bg-white text-slate-700 rounded-md border border-slate-300 font-medium hover:bg-slate-50"
               >
-                Cancel
+                रद्द करा
               </button>
-              <a
-                href={notice.applyUrl || notice.applyOnlineUrl || notice.officialSource}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setShowApplyConfirm(false)}
-                className="px-4 py-1 bg-sky-600 text-white rounded-md font-bold hover:bg-sky-500 inline-flex items-center"
+              <button
+                onClick={() => {
+                  setShowApplyConfirm(false);
+                  const dest = LinkVerificationService.getVerifiedPortalUrl(
+                    notice.examTargetId,
+                    notice.applyUrl || notice.applyOnlineUrl || notice.officialSource
+                  );
+                  LinkVerificationService.safeOpenExternalLink(dest);
+                }}
+                className="px-4 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded-md font-bold inline-flex items-center shadow-xs transition-colors"
               >
-                <span>Proceed to Portal</span>
+                <span>अधिकृत पोर्टलवर जा</span>
                 <ExternalLink className="w-3.5 h-3.5 ml-1" />
-              </a>
+              </button>
             </div>
           </div>
         )}
@@ -452,25 +458,21 @@ export const RecruitmentDetailModal: React.FC<RecruitmentDetailModalProps> = ({
             </button>
           </div>
 
-          {/* Right Actions: Official PDF & Apply Officially */}
+          {/* Right Actions: Print & Apply */}
           <div className="flex items-center space-x-2">
-            {notice.officialPdfUrl || notice.pdfNotificationUrl ? (
-              <a
-                href={notice.officialPdfUrl || notice.pdfNotificationUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center space-x-1.5 shadow-xs"
-              >
-                <Download className="w-3.5 h-3.5 text-slate-600" />
-                <span>Download Official PDF</span>
-              </a>
-            ) : null}
+            <button
+              onClick={() => window.print()}
+              className="px-3.5 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-colors"
+            >
+              <FileText className="w-3.5 h-3.5 text-sky-600" />
+              <span>राजपत्र सेव्ह / प्रिंट करा</span>
+            </button>
 
             <button
               onClick={() => setShowApplyConfirm(true)}
-              className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-colors"
+              className="px-4 py-2 rounded-lg bg-sky-700 hover:bg-sky-600 text-white text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-colors"
             >
-              <span>Apply Officially</span>
+              <span>अर्ज करा (Apply)</span>
               <ExternalLink className="w-3.5 h-3.5 ml-1" />
             </button>
           </div>

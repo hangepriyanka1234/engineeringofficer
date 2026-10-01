@@ -8,7 +8,7 @@ import {
 } from '../types';
 
 export const MistakeService = {
-  async getMistakes(userEmail = 'hangepriyanka1234@gmail.com'): Promise<SmartMistakeRecord[]> {
+  async getMistakes(userEmail = 'gitevijay123@gmail.com'): Promise<SmartMistakeRecord[]> {
     try {
       const res = await fetch(`/api/mistakes?userEmail=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
@@ -48,7 +48,7 @@ export const MistakeService = {
     }
   },
 
-  async updatePersonalNote(id: string, note: string, userEmail = 'hangepriyanka1234@gmail.com'): Promise<SmartMistakeRecord | null> {
+  async updatePersonalNote(id: string, note: string, userEmail = 'gitevijay123@gmail.com'): Promise<SmartMistakeRecord | null> {
     try {
       const res = await fetch(`/api/mistakes/${id}/note`, {
         method: 'PUT',
@@ -63,7 +63,7 @@ export const MistakeService = {
     }
   },
 
-  async updateCategory(id: string, category: string, userEmail = 'hangepriyanka1234@gmail.com'): Promise<SmartMistakeRecord | null> {
+  async updateCategory(id: string, category: string, userEmail = 'gitevijay123@gmail.com'): Promise<SmartMistakeRecord | null> {
     try {
       const res = await fetch(`/api/mistakes/${id}/category`, {
         method: 'PUT',
@@ -78,7 +78,7 @@ export const MistakeService = {
     }
   },
 
-  async toggleMastery(id: string, userEmail = 'hangepriyanka1234@gmail.com'): Promise<SmartMistakeRecord | null> {
+  async toggleMastery(id: string, userEmail = 'gitevijay123@gmail.com'): Promise<SmartMistakeRecord | null> {
     try {
       const res = await fetch(`/api/mistakes/${id}/toggle-mastery`, {
         method: 'POST',
@@ -93,7 +93,7 @@ export const MistakeService = {
     }
   },
 
-  async deleteMistake(id: string, userEmail = 'hangepriyanka1234@gmail.com'): Promise<boolean> {
+  async deleteMistake(id: string, userEmail = 'gitevijay123@gmail.com'): Promise<boolean> {
     try {
       const res = await fetch(`/api/mistakes/${id}?userEmail=${encodeURIComponent(userEmail)}`, {
         method: 'DELETE',

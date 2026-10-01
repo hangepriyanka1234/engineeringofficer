@@ -26,7 +26,11 @@ import {
   XCircle,
   Clock,
   Eye,
-  Edit3
+  Edit3,
+  Building2,
+  Printer,
+  Flag,
+  Percent
 } from 'lucide-react';
 import {
   PYQItem,
@@ -41,6 +45,7 @@ import { PyqService } from '../services/pyqService';
 import { EXAM_CATALOGUE, SUBJECTS_LIST, PYQ_PAPERS } from '../data/mockData';
 import { ExamBadge } from '../components/common/ExamBadge';
 import { PYQPracticeSessionModal } from '../components/PYQPracticeSessionModal';
+import { PYQMasterPaperModal } from '../components/PYQMasterPaperModal';
 
 interface PYQsViewProps {
   isAdmin?: boolean;
@@ -53,8 +58,8 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
   onStartPYQTest,
   onNavigateToAdmin,
 }) => {
-  // Navigation tabs in PYQ view
-  const [activeTab, setActiveTab] = useState<'library' | 'topic-mapping' | 'papers' | 'analytics'>('library');
+  // Navigation tabs in PYQ view (default to papers for primary experience)
+  const [activeTab, setActiveTab] = useState<'library' | 'topic-mapping' | 'papers' | 'analytics'>('papers');
 
   // Query and filter states
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -83,6 +88,17 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
 
   // Self-test answer tracker for browse mode
   const [userSelectedOptions, setUserSelectedOptions] = useState<Record<string, number>>({});
+
+  // Flagship Master Paper Modal State
+  const [selectedMasterPaper, setSelectedMasterPaper] = useState<PYQPaper | null>(null);
+  const [paperExamFilter, setPaperExamFilter] = useState<string>('all');
+  const [paperYearFilter, setPaperYearFilter] = useState<string>('all');
+  const [pyqToast, setPyqToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setPyqToast(msg);
+    setTimeout(() => setPyqToast(null), 3000);
+  };
 
   // Quick Admin Approval State (for inline admin workflow)
   const [quickApproveQuestion, setQuickApproveQuestion] = useState<PYQItem | null>(null);
@@ -169,7 +185,7 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
     subtitle?: string
   ) => {
     if (!practiceQuestions || practiceQuestions.length === 0) {
-      alert('No verified questions currently available for this selection.');
+      showToast('या निवडीसाठी सध्या कोणतेही सत्यापित प्रश्न उपलब्ध नाहीत.');
       return;
     }
     setPracticeSessionConfig({
@@ -210,46 +226,55 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
       });
       setQuickApproveQuestion(null);
       loadPYQs();
-      alert('Question approved and promoted to Official Verified PYQ.');
+      showToast('प्रश्न मंजूर झाला आणि अधिकृत सत्यापित PYQ म्हणून पदोन्नत केला.');
     } catch (err: any) {
-      alert(`Approval error: ${err.message}`);
+      showToast(`त्रुटी: ${err.message}`);
     }
   };
 
   return (
     <div className="space-y-6">
       {/* Top Banner & Official Authenticity Pledge */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
-              <span className="p-1.5 rounded-lg bg-sky-100 text-sky-700">
+              <span className="p-2 rounded-xl bg-sky-50 text-sky-700 border border-sky-200">
                 <History className="w-5 h-5" />
               </span>
-              <h1 className="text-xl font-bold text-slate-900">
-                Verified Previous Year Question (PYQ) System
-              </h1>
+              <div>
+                <span className="text-[10px] font-bold text-sky-700 tracking-wider uppercase block">
+                  AUTHENTIC GOVERNMENT EXAM REPOSITORY
+                </span>
+                <h1 className="text-xl font-black text-slate-900 tracking-tight">
+                  महाराष्ट्र स्थापत्य अभियांत्रिकी अधिकृत PYQ व प्रश्नपत्रिका पोर्टल (2015–2024)
+                </h1>
+              </div>
             </div>
-            <p className="text-xs text-slate-500 mt-1 max-w-3xl">
-              Authentic civil engineering questions from Maharashtra PWD, MPSC MES, SSC JE, RRB JE, WRD, BMC, ZP & UPSC ESE (2019–2024). Every question carries verified source provenance, master booklet codes, official keys, and version history.
+            <p className="text-xs text-slate-500 mt-2 max-w-3xl leading-relaxed">
+              महाराष्ट्र PWD JE/CEA, MPSC MES, जलसंपदा (WRD), जिल्हा परिषद (ZP), BMC Mumbai, SSC JE, RRB JE व UPSC ESE च्या मूळ प्रश्नपत्रिका, मास्टर मालिका A/B/C/D, अधिकृत अंतिम उत्तरतालिका, वर्गवारीनुसार कट-ऑफ आणि TCS/IBPS रिअल CBT सिम्युलेटर.
             </p>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <span className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Admin Provenance Audited</span>
+              <span>100% Provenance Audited</span>
+            </span>
+            <span className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200">
+              <TrendingUp className="w-4 h-4 text-amber-600" />
+              <span>Official Cutoffs Included</span>
             </span>
           </div>
         </div>
 
         {/* View Mode Switcher Tabs */}
-        <div className="flex items-center space-x-2 border-b border-slate-200 mt-5 overflow-x-auto pb-1">
+        <div className="flex items-center space-x-2 border-b border-slate-200 mt-6 overflow-x-auto pb-1">
           {[
-            { id: 'library', label: 'Browse & Search PYQs', icon: BookOpen, count: countsByStatus.all || questions.length },
-            { id: 'topic-mapping', label: 'Topic Mapping Matrix', icon: Layers },
-            { id: 'papers', label: 'Exam-Wise & Year-Wise Papers', icon: Calendar, count: PYQ_PAPERS.length },
-            { id: 'analytics', label: 'PYQ Analytics & Trends', icon: BarChart3 },
+            { id: 'papers', label: 'अधिकृत प्रश्नपत्रिका व CBT (Official Papers)', icon: Calendar, count: PYQ_PAPERS.length },
+            { id: 'library', label: 'शोध व प्रश्नसंच (Browse Qs)', icon: BookOpen, count: countsByStatus.all || questions.length },
+            { id: 'topic-mapping', label: 'विषयवार वारंवारता (Topic Matrix)', icon: Layers },
+            { id: 'analytics', label: 'ट्रेंड विश्लेषण (Analytics)', icon: BarChart3 },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -488,9 +513,16 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
                       </div>
                     </div>
 
-                    {/* Problem Stem */}
-                    <div className="text-slate-900 font-medium text-sm sm:text-base leading-relaxed">
-                      {q.stem}
+                    {/* Problem Stem (Bilingual Marathi & English) */}
+                    <div className="space-y-2">
+                      {q.translations?.mr?.stem && (
+                        <p className="text-slate-950 font-medium text-sm sm:text-base leading-relaxed border-l-2 border-amber-500 pl-3">
+                          {q.translations.mr.stem}
+                        </p>
+                      )}
+                      <p className="text-slate-800 font-normal text-sm sm:text-base leading-relaxed border-l-2 border-sky-400 pl-3">
+                        {q.stem}
+                      </p>
                     </div>
 
                     {/* Options (Interactive Self-Test) */}
@@ -499,6 +531,7 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
                         const isChosen = userSelected === oIdx;
                         const showKey = isExpanded || userSelected !== undefined;
                         const isCorrectKey = oIdx === q.correctOption;
+                        const mrOpt = q.translations?.mr?.options?.[oIdx];
 
                         let style = 'border-slate-200 hover:border-slate-300 bg-white text-slate-800';
                         if (showKey) {
@@ -521,14 +554,17 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
                                 [q.id]: oIdx,
                               }))
                             }
-                            className={`text-left p-3 rounded-xl border text-xs flex items-center space-x-2.5 transition-all ${style}`}
+                            className={`text-left p-3 rounded-xl border text-xs flex items-start space-x-2.5 transition-all ${style}`}
                           >
-                            <span className="w-5 h-5 rounded-full border border-slate-300 flex items-center justify-center font-mono font-bold text-[11px] shrink-0 bg-white">
+                            <span className="w-5 h-5 rounded-full border border-slate-300 flex items-center justify-center font-mono font-bold text-[11px] shrink-0 bg-white mt-0.5">
                               {String.fromCharCode(65 + oIdx)}
                             </span>
-                            <span className="flex-1">{opt}</span>
+                            <div className="flex-1 space-y-0.5">
+                              {mrOpt && <div className="font-semibold text-slate-900">{mrOpt}</div>}
+                              <div className="text-slate-700">{opt}</div>
+                            </div>
                             {showKey && isCorrectKey && (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                             )}
                           </button>
                         );
@@ -743,79 +779,198 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
       {/* TAB 3: EXAM-WISE & YEAR-WISE PAPERS */}
       {/* ==================================================== */}
       {activeTab === 'papers' && (
-        <div className="space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-            <h2 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-              <Calendar className="w-5 h-5 text-sky-600" />
-              <span>Authentic Exam & Year-Wise Question Paper Collections</span>
-            </h2>
-            <p className="text-xs text-slate-500 mt-1">
-              Solve complete official question papers under authentic computer-based test conditions or review verified keys paper-by-paper.
-            </p>
+        <div className="space-y-5">
+          {/* Papers Banner */}
+          <div className="bg-gradient-to-r from-[#0F2744] to-[#1A365D] rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+            <div className="relative z-10 max-w-3xl space-y-2">
+              <div className="flex items-center space-x-2">
+                <span className="p-1 rounded-md bg-amber-400/20 text-amber-300 font-mono text-[11px] font-bold border border-amber-400/30">
+                  OFFICIAL QUESTION PAPERS (2015–2024)
+                </span>
+                <span className="text-[11px] text-sky-200">
+                  महाराष्ट्र लोकसेवा आयोग, PWD, WRD, ZP, BMC, SSC JE व RRB JE
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                अधिकृत मूळ प्रश्नपत्रिका व CBT सिम्युलेटर
+              </h2>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                प्रत्येक प्रश्नपत्रिका मूळ आयोगाच्या फॉरमॅटनुसार, मास्टर उत्तरतालिका, वर्गवारीनुसार अधिकृत कट-ऑफ (Cutoff Marks), निगेटिव्ह मार्किंग क्लॉज आणि सखोल IS कोड स्पष्टीकरणासह उपलब्ध आहे.
+              </p>
+            </div>
           </div>
 
+          {/* Filters Bar: Cadre & Year */}
+          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              {/* Cadre Filter Pills */}
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                <span className="text-slate-500 font-bold text-[11px] mr-1">परीक्षा संवर्ग:</span>
+                {[
+                  { id: 'all', label: 'सर्व परीक्षा (All Papers)' },
+                  { id: 'mpsc_civil', label: 'MPSC MES' },
+                  { id: 'maha_pwd', label: 'Maha PWD JE' },
+                  { id: 'maha_cea', label: 'PWD / WRD CEA' },
+                  { id: 'wrd_irrigation', label: 'WRD Jalsampada' },
+                  { id: 'zp_civil', label: 'ZP Civil JE' },
+                  { id: 'bmc_municipal', label: 'BMC Mumbai' },
+                  { id: 'ssc_je', label: 'SSC JE' },
+                  { id: 'rrb_je', label: 'RRB JE' },
+                ].map((cadre) => (
+                  <button
+                    key={cadre.id}
+                    onClick={() => setPaperExamFilter(cadre.id)}
+                    className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${
+                      paperExamFilter === cadre.id
+                        ? 'bg-sky-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    {cadre.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Year Select */}
+              <div className="flex items-center space-x-2">
+                <span className="text-slate-500 font-bold text-[11px]">वर्ष:</span>
+                <select
+                  value={paperYearFilter}
+                  onChange={(e) => setPaperYearFilter(e.target.value)}
+                  className="text-xs rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-800 font-semibold focus:ring-2 focus:ring-sky-500"
+                >
+                  <option value="all">सर्व वर्षे (All Years)</option>
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                  <option value="2022">2022</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Papers Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {PYQ_PAPERS.map((paper) => (
+            {PYQ_PAPERS.filter((p) => {
+              const matchesCadre = paperExamFilter === 'all' || p.examTargetId === paperExamFilter;
+              const matchesYear = paperYearFilter === 'all' || String(p.year) === paperYearFilter;
+              return matchesCadre && matchesYear;
+            }).map((paper) => (
               <div
                 key={paper.id}
                 id={`pyq-paper-card-${paper.id}`}
-                className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 hover:border-slate-300"
               >
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <ExamBadge examId={paper.examTargetId} />
-                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-slate-100 text-slate-700">
-                      Year {paper.year}
-                    </span>
+                  {/* Top Header Row */}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center space-x-2">
+                      <ExamBadge examId={paper.examTargetId} />
+                      <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-slate-900 text-white">
+                        {paper.year}
+                      </span>
+                    </div>
+
+                    {paper.cutoffScore && (
+                      <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                        <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
+                        <span>ओपन कट-ऑफ: {paper.cutoffScore} / {paper.totalMarks}</span>
+                      </span>
+                    )}
                   </div>
 
-                  <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
-                    {paper.title}
-                  </h3>
+                  {/* Title & Conducting Body */}
+                  <div>
+                    {paper.conductingBody && (
+                      <span className="text-[10px] font-bold text-sky-800 uppercase tracking-wide block mb-0.5">
+                        {paper.conductingBody}
+                      </span>
+                    )}
+                    <h3 className="font-bold text-slate-900 text-base leading-snug">
+                      {paper.title}
+                    </h3>
+                    {paper.shift && (
+                      <p className="text-xs text-slate-500 mt-1 flex items-center">
+                        <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" />
+                        <span>{paper.shift}</span>
+                        {paper.officialGazetteNotice && (
+                          <span className="text-[10px] text-slate-400 ml-2 font-mono">
+                            • {paper.officialGazetteNotice}
+                          </span>
+                        )}
+                      </p>
+                    )}
+                  </div>
 
-                  {paper.shift && (
-                    <p className="text-xs text-slate-500 flex items-center">
-                      <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" />
-                      <span>{paper.shift}</span>
-                    </p>
+                  {/* Metrics Banner */}
+                  <div className="grid grid-cols-3 gap-2 py-2.5 bg-slate-50 rounded-xl border border-slate-100 text-center text-xs">
+                    <div>
+                      <span className="text-slate-400 block text-[10px] font-medium">एकूण प्रश्न</span>
+                      <span className="font-bold text-slate-900 font-mono">{paper.totalQuestions} MCQs</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px] font-medium">वेळ मर्यादा</span>
+                      <span className="font-bold text-slate-900 font-mono">{paper.durationMinutes} मिनिटे</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px] font-medium">एकूण गुण</span>
+                      <span className="font-bold text-slate-900 font-mono">{paper.totalMarks} Marks</span>
+                    </div>
+                  </div>
+
+                  {/* Key Highlights / Subject Split if available */}
+                  {paper.subjectBreakdown && paper.subjectBreakdown.length > 0 && (
+                    <div className="space-y-1">
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                        प्रमुख घटक गुणांकन (Subject Allocation):
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {paper.subjectBreakdown.slice(0, 4).map((sb, sbIdx) => (
+                          <span
+                            key={sbIdx}
+                            className="px-2 py-0.5 rounded bg-sky-50 text-sky-800 text-[10px] font-medium border border-sky-100"
+                          >
+                            {sb.subject.split('&')[0].trim()}: <strong>{sb.count} Qs</strong>
+                          </span>
+                        ))}
+                        {paper.subjectBreakdown.length > 4 && (
+                          <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px]">
+                            +{paper.subjectBreakdown.length - 4} इतर घटक
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   )}
-
-                  <div className="grid grid-cols-3 gap-2 py-2 border-y border-slate-100 text-center text-xs">
-                    <div>
-                      <span className="text-slate-400 block text-[10px]">QUESTIONS</span>
-                      <span className="font-bold text-slate-800 font-mono">{paper.totalQuestions} MCQs</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px]">DURATION</span>
-                      <span className="font-bold text-slate-800 font-mono">{paper.durationMinutes} Min</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px]">MAX MARKS</span>
-                      <span className="font-bold text-slate-800 font-mono">{paper.totalMarks} Marks</span>
-                    </div>
-                  </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-xs text-emerald-700 font-medium flex items-center">
-                    <FileCheck className="w-4 h-4 mr-1 text-emerald-600" />
-                    Verified Official Key
-                  </span>
+                {/* Bottom Card Actions: 3 Flagship Buttons */}
+                <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center space-x-1.5 text-xs text-emerald-700 font-semibold">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>अधिकृत उत्तरतालिका</span>
+                  </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* Master Booklet Button */}
                     <button
-                      onClick={() => handleStartPaperPractice(paper, true)}
-                      className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium flex items-center space-x-1"
+                      onClick={() => setSelectedMasterPaper(paper)}
+                      className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold flex items-center space-x-1"
+                      title="मास्टर प्रश्नपत्रिका व स्पष्टीकरण उघडा"
                     >
-                      <BookOpen className="w-3.5 h-3.5" />
-                      <span>Study Mode</span>
+                      <BookOpen className="w-3.5 h-3.5 text-sky-600" />
+                      <span>मास्टर प्रश्नपत्रिका</span>
                     </button>
+
+                    {/* Solve in CBT Mode Button */}
                     <button
-                      onClick={() => handleStartPaperPractice(paper, false)}
-                      className="px-3.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center space-x-1 shadow-xs"
+                      onClick={() => setSelectedMasterPaper(paper)}
+                      className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center space-x-1 shadow-xs"
+                      title="TCS iON CBT सिम्युलेटर सुरू करा"
                     >
                       <Play className="w-3 h-3 fill-white" />
-                      <span>Solve CBT</span>
+                      <span>CBT सोडवा</span>
                     </button>
                   </div>
                 </div>
@@ -1110,6 +1265,24 @@ export const PYQsView: React.FC<PYQsViewProps> = ({
           instantFeedbackMode={practiceSessionConfig.instantFeedback}
           onClose={() => setPracticeSessionConfig(null)}
         />
+      )}
+
+      {/* ==================================================== */}
+      {/* FLAGSHIP OFFICIAL MASTER QUESTION PAPER MODAL */}
+      {/* ==================================================== */}
+      {selectedMasterPaper && (
+        <PYQMasterPaperModal
+          paper={selectedMasterPaper}
+          questions={questions}
+          onClose={() => setSelectedMasterPaper(null)}
+        />
+      )}
+      {/* Toast Feedback */}
+      {pyqToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center space-x-2 animate-in fade-in slide-in-from-bottom-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{pyqToast}</span>
+        </div>
       )}
     </div>
   );

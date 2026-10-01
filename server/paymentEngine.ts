@@ -69,33 +69,33 @@ export class ServerPaymentEngine {
       },
       {
         id: 'plan_mcq_master',
-        name: 'Plan A — MCQ Master',
-        slug: 'mcq-master',
-        description: 'Complete Civil MCQ Question Bank with 20,000+ questions, subject/topic/difficulty filtering.',
-        price: 499,
+        name: '₹299 Civil Officer MCQ & Full Test Pass',
+        slug: 'mcq-master-299',
+        description: 'Complete 20,000+ Civil Engineering MCQs, Official Exam PYQs, CBT Mock Tests, IS Codes & AI Tutor.',
+        price: 299,
         original_price: 999,
         currency: 'INR',
-        duration: 6,
+        duration: 12,
         duration_unit: 'months',
         billing_type: 'ONE_TIME',
         product_type: 'mcq_bank',
         active: true,
-        featured: false,
-        display_order: 2,
-        included_products: ['MCQ_BANK', 'FORMULA_LAB'],
-        ai_daily_limit: 15,
-        ai_monthly_limit: 300,
+        featured: true,
+        display_order: 1,
+        included_products: ['MCQ_BANK', 'PYQ_BANK', 'TEST_SERIES', 'FORMULA_LAB', 'AI_PRO'],
+        ai_daily_limit: 50,
+        ai_monthly_limit: 1000,
         question_access_limit: -1, // unlimited
-        test_access_limit: 1,
-        video_access: false,
-        badge: '20,000+ MCQs',
+        test_access_limit: -1, // unlimited
+        video_access: true,
+        badge: '🔥 ₹299 Master Plan',
         features: [
           'Unrestricted Access to 20,000+ Civil Engineering MCQs',
-          'Subject-wise, Topic-wise & Difficulty-wise Practice Modes',
-          'IS 456, IS 800, IRC & NBC Codal Clause References',
+          'All Maharashtra & Central PYQs (MPSC MES, WRD, PWD, BMC, ZP, SSC JE)',
+          'Full-Length TCS iON CBT Mock Tests with Instant Rank & Solution',
+          'IS 456, IS 800, IRC & NBC Codal Clause References & Solvers',
           'Personal Mistake Notebook with SM-2 Spaced Repetition',
-          'Bookmark & Flagged Questions Repository',
-          'Formula Lab & Engineering Calculator Suite Included',
+          'Formula Lab, Engineering Calculators & AI Step-by-Step Explanations',
         ],
       },
       {
@@ -392,8 +392,8 @@ export class ServerPaymentEngine {
     const sampleTx: PaymentTransactionRecord[] = [
       {
         id: 'tx_seed_1',
-        user_id: 'usr_priyanka',
-        user_email: 'priyanka.k@gmail.com',
+        user_id: 'usr_vijay',
+        user_email: 'gitevijay123@gmail.com',
         plan_id: 'plan_engineering_pro_combo',
         plan_name: 'Plan F — Engineering Pro Combo',
         razorpay_payment_id: 'pay_SP_Live_87612',
@@ -761,14 +761,16 @@ export class ServerPaymentEngine {
       .update(payload)
       .digest('hex');
 
-    // Safe comparison: accepts valid HMAC or test environment mock signature
-    const isValidSignature =
-      crypto.timingSafeEqual(
+    // Strict timing-safe HMAC-SHA256 comparison (no fake test bypasses)
+    let isValidSignature = false;
+    try {
+      isValidSignature = crypto.timingSafeEqual(
         Buffer.from(expectedSignature, 'utf8'),
-        Buffer.from(razorpaySignature || expectedSignature, 'utf8')
-      ) ||
-      razorpaySignature === 'test_verified_signature' ||
-      razorpaySignature.startsWith('rzp_sig_');
+        Buffer.from(razorpaySignature || '', 'utf8')
+      );
+    } catch {
+      isValidSignature = false;
+    }
 
     if (!isValidSignature) {
       this.logAudit('PAYMENT_VERIFIED', userEmail, razorpayOrderId, razorpayPaymentId, {
@@ -950,16 +952,21 @@ export class ServerPaymentEngine {
     rawPayload: string,
     eventData: any
   ): { received: boolean; processed: boolean; message: string } {
-    // 1. Verify Webhook Signature
+    // 1. Verify Webhook Signature strictly
     const expectedSig = crypto
       .createHmac('sha256', this.webhookSecret)
       .update(rawPayload)
       .digest('hex');
 
-    const isValid =
-      signature === expectedSig ||
-      signature.startsWith('mock_wh_sig_') ||
-      process.env.NODE_ENV !== 'production';
+    let isValid = false;
+    try {
+      isValid = crypto.timingSafeEqual(
+        Buffer.from(expectedSig, 'utf8'),
+        Buffer.from(signature || '', 'utf8')
+      );
+    } catch {
+      isValid = false;
+    }
 
     if (!isValid) {
       this.logAudit('WEBHOOK_RECEIVED', undefined, undefined, undefined, {
@@ -1218,4 +1225,28 @@ export class ServerPaymentEngine {
     };
     this.auditLogs.push(log);
   }
+
+  static getRazorpayConfig() {
+    return {
+      keyId: this.razorpayKeyId,
+      hasKeySecret: Boolean(this.razorpayKeySecret && this.razorpayKeySecret.length > 5),
+      webhookSecret: this.webhookSecret,
+      currency: 'INR',
+      merchantName: 'PRIME MULTI SERVICES AND SUPPLIERS',
+      contactEmail: 'gitevijay123@gmail.com',
+      isLive: !this.razorpayKeyId.startsWith('rzp_test_'),
+    };
+  }
+
+  static updateRazorpayConfig(config: {
+    keyId?: string;
+    keySecret?: string;
+    webhookSecret?: string;
+  }) {
+    if (config.keyId) this.razorpayKeyId = config.keyId.trim();
+    if (config.keySecret) this.razorpayKeySecret = config.keySecret.trim();
+    if (config.webhookSecret) this.webhookSecret = config.webhookSecret.trim();
+    return this.getRazorpayConfig();
+  }
 }
+

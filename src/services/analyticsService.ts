@@ -8,7 +8,7 @@ export class AnalyticsService {
    * Fetches the materialized analytics summary from the server.
    * Falls back gracefully to local storage aggregation or cached values.
    */
-  static async getStudentAnalytics(userEmail: string = 'hangepriyanka1234@gmail.com'): Promise<CompleteStudentAnalytics> {
+  static async getStudentAnalytics(userEmail: string = 'gitevijay123@gmail.com'): Promise<CompleteStudentAnalytics> {
     try {
       const res = await fetch(`/api/analytics/student?userEmail=${encodeURIComponent(userEmail)}`);
       if (res.ok) {
@@ -44,7 +44,7 @@ export class AnalyticsService {
   /**
    * Syncs a completed test attempt with the server-side aggregation engine
    */
-  static async recordTestAttempt(attempt: TestAttempt, userEmail: string = 'hangepriyanka1234@gmail.com'): Promise<void> {
+  static async recordTestAttempt(attempt: TestAttempt, userEmail: string = 'gitevijay123@gmail.com'): Promise<void> {
     try {
       await fetch('/api/analytics/record-attempt', {
         method: 'POST',
@@ -59,7 +59,7 @@ export class AnalyticsService {
   /**
    * Force refreshes the analytics materialized cache
    */
-  static async refreshCache(userEmail: string = 'hangepriyanka1234@gmail.com'): Promise<CompleteStudentAnalytics> {
+  static async refreshCache(userEmail: string = 'gitevijay123@gmail.com'): Promise<CompleteStudentAnalytics> {
     try {
       await fetch('/api/analytics/invalidate', {
         method: 'POST',
@@ -75,7 +75,7 @@ export class AnalyticsService {
   /**
    * Generates a printable / downloadable diagnostic performance report
    */
-  static exportDiagnosticReport(data: CompleteStudentAnalytics, studentName: string = 'Priyanka Hange'): void {
+  static exportDiagnosticReport(data: CompleteStudentAnalytics, studentName: string = 'Vijay Gite'): void {
     const reportDate = new Date().toLocaleDateString('en-IN', {
       day: 'numeric',
       month: 'long',

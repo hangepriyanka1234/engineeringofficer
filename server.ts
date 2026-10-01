@@ -28,6 +28,7 @@ import { ServerAdminOperationsEngine } from "./server/adminOperationsEngine";
 import { ServerLoadTestEngine } from "./server/loadTestEngine";
 import { ServerQuestionBankEngine } from "./server/questionBankEngine";
 import { ServerSupabaseEngine } from "./server/supabaseEngine";
+import { requireAdminAuth } from "./server/adminAuthMiddleware";
 
 dotenv.config();
 
@@ -36,6 +37,9 @@ const PORT = 3000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Server-side Authentication & Authorization Middleware for all Admin APIs
+app.use("/api/admin", requireAdminAuth);
 
 // Initialize server-side Gemini client with aistudio-build user agent header
 let aiClient: GoogleGenAI | null = null;
@@ -58,7 +62,7 @@ app.get("/api/health", async (_req: Request, res: Response) => {
   const supabaseStatus = await ServerSupabaseEngine.testConnection();
   res.json({
     status: "ok",
-    app: "Engineering Officer BY SP",
+    app: "Engineering Officer BY MH",
     version: "1.0.0",
     engine: "Civil Engineering Prep Platform",
     supabase: supabaseStatus,
@@ -75,6 +79,51 @@ app.get("/api/supabase/status", async (_req: Request, res: Response) => {
     res.status(500).json({ connected: false, message: error.message });
   }
 });
+
+// Supabase Keep-Alive Heartbeat Ping (Prevents auto-pause)
+app.post("/api/supabase/keepalive", async (_req: Request, res: Response) => {
+  try {
+    const pingResult = await ServerSupabaseEngine.triggerKeepAlive();
+    res.json(pingResult);
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Supabase Storage & Database Metrics
+app.get("/api/supabase/storage-metrics", async (_req: Request, res: Response) => {
+  try {
+    const metrics = await ServerSupabaseEngine.getStorageMetrics();
+    res.json({ success: true, metrics });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Supabase Credentials Manager
+app.get("/api/supabase/credentials", (_req: Request, res: Response) => {
+  res.json(ServerSupabaseEngine.getCredentials());
+});
+
+app.post("/api/supabase/credentials", (req: Request, res: Response) => {
+  const { url, key } = req.body;
+  if (!url || !key) {
+    return res.status(400).json({ error: "url and key are required" });
+  }
+  ServerSupabaseEngine.setCredentials(url, key);
+  res.json({ success: true, message: "Supabase credentials updated and reconnected." });
+});
+
+// Razorpay Admin Configuration APIs
+app.get("/api/razorpay/config", (_req: Request, res: Response) => {
+  res.json(ServerPaymentEngine.getRazorpayConfig());
+});
+
+app.post("/api/razorpay/config", (req: Request, res: Response) => {
+  const updated = ServerPaymentEngine.updateRazorpayConfig(req.body);
+  res.json({ success: true, config: updated });
+});
+
 
 
 // ==========================================
@@ -188,7 +237,7 @@ app.post("/api/tests/:testId/submit", (req: Request, res: Response) => {
 
     // Materialize into Analytics Engine incrementally for zero-latency dashboards
     try {
-      ServerAnalyticsEngine.recordTestAttempt(userEmail || 'hangepriyanka1234@gmail.com', evaluation.result);
+      ServerAnalyticsEngine.recordTestAttempt(userEmail || 'gitevijay123@gmail.com', evaluation.result);
     } catch (anErr) {
       console.warn("[AnalyticsEngine] Incremental attempt update warning:", anErr);
     }
@@ -326,7 +375,7 @@ app.post("/api/admin/tests/:testId/clone", (req: Request, res: Response) => {
 // Get materialized analytics summary (O(1) cached lookup with instant response)
 app.get("/api/analytics/student", (req: Request, res: Response) => {
   try {
-    const userEmail = (req.query.userEmail as string) || "hangepriyanka1234@gmail.com";
+    const userEmail = (req.query.userEmail as string) || "gitevijay123@gmail.com";
     const data = ServerAnalyticsEngine.getStudentAnalytics(userEmail);
     res.json({ success: true, data });
   } catch (error: any) {
@@ -342,7 +391,7 @@ app.post("/api/analytics/record-attempt", (req: Request, res: Response) => {
     if (!attempt) {
       return res.status(400).json({ error: "Attempt object is required." });
     }
-    const updated = ServerAnalyticsEngine.recordTestAttempt(userEmail || "hangepriyanka1234@gmail.com", attempt);
+    const updated = ServerAnalyticsEngine.recordTestAttempt(userEmail || "gitevijay123@gmail.com", attempt);
     res.json({ success: true, data: updated });
   } catch (error: any) {
     console.error("[AnalyticsEngine] Error recording attempt:", error);
@@ -870,7 +919,7 @@ app.post("/api/pyqs/:id/rollback", (req: Request, res: Response) => {
 // Get all smart mistakes for user
 app.get("/api/mistakes", (req: Request, res: Response) => {
   try {
-    const userEmail = (req.query.userEmail as string) || "hangepriyanka1234@gmail.com";
+    const userEmail = (req.query.userEmail as string) || "gitevijay123@gmail.com";
     const list = ServerMistakeEngine.getMistakes(userEmail);
     res.json({ success: true, count: list.length, mistakes: list });
   } catch (error: any) {
@@ -881,7 +930,7 @@ app.get("/api/mistakes", (req: Request, res: Response) => {
 // Log or update a smart mistake (handles wrong answers, bookmarks, low-confidence, skips)
 app.post("/api/mistakes/log", (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.userEmail || "hangepriyanka1234@gmail.com";
+    const userEmail = req.body.userEmail || "gitevijay123@gmail.com";
     const record = ServerMistakeEngine.logOrUpdateMistake(userEmail, req.body);
     res.json({ success: true, message: "Mistake logged or updated in revision queue.", record });
   } catch (error: any) {
@@ -892,7 +941,7 @@ app.post("/api/mistakes/log", (req: Request, res: Response) => {
 // Update personal note on a mistake
 app.put("/api/mistakes/:id/note", (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.userEmail || "hangepriyanka1234@gmail.com";
+    const userEmail = req.body.userEmail || "gitevijay123@gmail.com";
     const { note } = req.body;
     const updated = ServerMistakeEngine.updatePersonalNote(userEmail, req.params.id, note || "");
     if (!updated) return res.status(404).json({ error: "Mistake not found" });
@@ -905,7 +954,7 @@ app.put("/api/mistakes/:id/note", (req: Request, res: Response) => {
 // Update error category classification on a mistake
 app.put("/api/mistakes/:id/category", (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.userEmail || "hangepriyanka1234@gmail.com";
+    const userEmail = req.body.userEmail || "gitevijay123@gmail.com";
     const { category } = req.body;
     const updated = ServerMistakeEngine.updateErrorCategory(userEmail, req.params.id, category);
     if (!updated) return res.status(404).json({ error: "Mistake not found" });
@@ -918,7 +967,7 @@ app.put("/api/mistakes/:id/category", (req: Request, res: Response) => {
 // Toggle mastery status (Resolved / Unresolved)
 app.post("/api/mistakes/:id/toggle-mastery", (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.userEmail || "hangepriyanka1234@gmail.com";
+    const userEmail = req.body.userEmail || "gitevijay123@gmail.com";
     const updated = ServerMistakeEngine.toggleMasteryStatus(userEmail, req.params.id);
     if (!updated) return res.status(404).json({ error: "Mistake not found" });
     res.json({ success: true, record: updated });
@@ -930,7 +979,7 @@ app.post("/api/mistakes/:id/toggle-mastery", (req: Request, res: Response) => {
 // Delete mistake from notebook
 app.delete("/api/mistakes/:id", (req: Request, res: Response) => {
   try {
-    const userEmail = (req.query.userEmail as string) || "hangepriyanka1234@gmail.com";
+    const userEmail = (req.query.userEmail as string) || "gitevijay123@gmail.com";
     const deleted = ServerMistakeEngine.deleteMistake(userEmail, req.params.id);
     res.json({ success: deleted });
   } catch (error: any) {
@@ -965,7 +1014,7 @@ app.post("/api/admin/mistakes/categories", (req: Request, res: Response) => {
 // Get spaced revision queues: Due Today, Overdue, Upcoming, Mastered
 app.get("/api/revision/queues", (req: Request, res: Response) => {
   try {
-    const userEmail = (req.query.userEmail as string) || "hangepriyanka1234@gmail.com";
+    const userEmail = (req.query.userEmail as string) || "gitevijay123@gmail.com";
     const queues = ServerRevisionEngine.getSpacedQueues(userEmail);
     res.json({ success: true, ...queues });
   } catch (error: any) {
@@ -976,7 +1025,7 @@ app.get("/api/revision/queues", (req: Request, res: Response) => {
 // Submit a single spaced revision attempt
 app.post("/api/revision/attempt", (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.userEmail || "hangepriyanka1234@gmail.com";
+    const userEmail = req.body.userEmail || "gitevijay123@gmail.com";
     const result = ServerRevisionEngine.recordRevisionAttempt(userEmail, req.body);
     res.json({ success: true, ...result });
   } catch (error: any) {
@@ -987,7 +1036,7 @@ app.post("/api/revision/attempt", (req: Request, res: Response) => {
 // Submit bulk revision session results
 app.post("/api/revision/bulk-retest", (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.userEmail || "hangepriyanka1234@gmail.com";
+    const userEmail = req.body.userEmail || "gitevijay123@gmail.com";
     const { results } = req.body;
     const summary = ServerRevisionEngine.performBulkRetest(userEmail, results || []);
     res.json({ success: true, ...summary });
@@ -999,7 +1048,7 @@ app.post("/api/revision/bulk-retest", (req: Request, res: Response) => {
 // Reschedule missed / overdue revision queue items
 app.post("/api/revision/reschedule-overdue", (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.userEmail || "hangepriyanka1234@gmail.com";
+    const userEmail = req.body.userEmail || "gitevijay123@gmail.com";
     const resSummary = ServerRevisionEngine.rescheduleOverdueQueue(userEmail);
     res.json({ success: true, message: `Rescheduled ${resSummary.rescheduledCount} overdue tasks for today.`, ...resSummary });
   } catch (error: any) {
@@ -1071,7 +1120,7 @@ app.get("/api/formulas/:id", (req: Request, res: Response) => {
 // Toggle Favorite Formula
 app.post("/api/formulas/:id/favorite", (req: Request, res: Response) => {
   try {
-    const userEmail = req.body.userEmail || "hangepriyanka1234@gmail.com";
+    const userEmail = req.body.userEmail || "gitevijay123@gmail.com";
     const isFav = ServerFormulaEngine.toggleFavorite(userEmail, req.params.id);
     res.json({ success: true, formulaId: req.params.id, isFavorite: isFav });
   } catch (error: any) {

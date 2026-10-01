@@ -516,6 +516,22 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             <span className="text-emerald-700 font-bold">1 Free CBT Mock Unlocked</span>
           </div>
         </div>
+
+        {/* Google Play Account Deletion Section */}
+        <div className="p-4 bg-rose-50/60 rounded-xl border border-rose-200/80 flex items-center justify-between text-xs">
+          <div>
+            <div className="font-bold text-rose-900">Google Play Data Safety & Compliance</div>
+            <div className="text-[11px] text-rose-700">खाता व डेटा कायमचा हटवण्यासाठी (In-App Account Deletion Request)</div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveView && setActiveView('account-deletion')}
+            className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold flex items-center space-x-1 shadow-xs"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Delete Account</span>
+          </button>
+        </div>
       </div>
     </div>
   );

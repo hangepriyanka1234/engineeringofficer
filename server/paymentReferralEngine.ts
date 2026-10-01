@@ -91,7 +91,7 @@ export class ServerPaymentReferralEngine {
           rewardAwarded: "+7 Days Pro Access",
         },
         {
-          referredNameMasked: "Priyanka M***",
+          referredNameMasked: "Vijay G***",
           joinedDate: "2026-03-10",
           status: "verified_active",
           rewardAwarded: "+7 Days Pro Access",

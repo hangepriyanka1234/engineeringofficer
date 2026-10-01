@@ -209,8 +209,8 @@ export class PaymentService {
         key: orderData.keyId,
         amount: orderData.amountPaisa,
         currency: orderData.currency || 'INR',
-        name: 'Engineering Officer BY SP',
-        description: `${orderData.planName} - Secure Civil Engineering Portal Access`,
+        name: 'PRIME MULTI SERVICES AND SUPPLIERS',
+        description: `${orderData.planName} - Engineering Officer BY MH`,
         order_id: orderData.razorpayOrderId,
         prefill: {
           name: profile.name,

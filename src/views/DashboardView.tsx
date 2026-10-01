@@ -1,33 +1,29 @@
 import React, { useState } from 'react';
 import {
   Building2,
-  FileCheck2,
+  FileText,
   Target,
-  Bot,
-  AlertOctagon,
-  TrendingUp,
+  FileCheck2,
+  ArrowRight,
+  Sparkles,
+  Bell,
+  User,
+  HardHat,
+  ChevronRight,
+  Clock,
   Award,
   BookOpen,
-  Briefcase,
-  ChevronRight,
-  Flame,
-  Clock,
-  ArrowUpRight,
-  Sparkles,
   Layers,
-  HardHat,
-  FileText,
-  Bookmark,
-  Calendar,
-  Bell,
+  Search,
   CheckCircle2,
-  AlertTriangle,
   Send,
-  History,
-  ShieldCheck,
-  Zap
+  X,
+  HelpCircle,
+  Zap,
+  Compass,
+  Cpu
 } from 'lucide-react';
-import { StudentProfile, ExamTargetId, Question, MockTest, RecruitmentNotice, MistakeLog, NotificationItem } from '../types';
+import { StudentProfile, ExamTargetId, MockTest, RecruitmentNotice } from '../types';
 import { EXAM_CATALOGUE, SUBJECTS_LIST } from '../data/mockData';
 import { StorageService } from '../services/storageService';
 import { GeminiService } from '../services/geminiService';
@@ -52,722 +48,495 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   mistakeCount,
 }) => {
   const currentExam = EXAM_CATALOGUE.find((e) => e.id === selectedExam) || EXAM_CATALOGUE[4];
-  const activeNotices = notices.filter((n) => n.status === 'Active' || n.status === 'Upcoming');
-  const studyPlan = StorageService.getStudyPlan(profile);
-  const mistakes = StorageService.getMistakes();
   const notifications = StorageService.getNotifications();
+  const unreadNotifications = notifications.filter((n) => !n.read).length;
 
-  // Count mistakes due for spaced review today
-  const todayStr = new Date().toISOString().split('T')[0];
-  const spacedDueToday = mistakes.filter((m) => !m.resolved && m.nextRevisionDate && m.nextRevisionDate <= todayStr).length;
+  // AI Assistant Modal State
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [aiQuery, setAiQuery] = useState('');
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
-  // AI Coach quick query state
-  const [coachInput, setCoachInput] = useState('');
-  const [coachResponse, setCoachResponse] = useState<string | null>(null);
-  const [isCoachLoading, setIsCoachLoading] = useState(false);
+  // Unfinished Practice state mock/check
+  const hasUnfinishedPractice = profile.solvedToday > 0;
+  const recentSubject = SUBJECTS_LIST[0]; // RCC / Limit State Design
 
-  const goalPercent = Math.min(
-    100,
-    Math.round((profile.solvedToday / profile.dailyGoalQuestions) * 100)
-  );
+  // Previous Year Papers categories for horizontal scroll
+  const pyqCategories = [
+    { id: 'ssc-je', title: 'SSC JE', subtitle: 'Junior Engineer Papers', count: '48 Papers', examId: 'ssc-je' as ExamTargetId },
+    { id: 'mpsc-mes', title: 'MPSC AE/JE', subtitle: 'Maharashtra Engg Services', count: '36 Papers', examId: 'mpsc-mes' as ExamTargetId },
+    { id: 'pwd', title: 'PWD', subtitle: 'Public Works Dept AE/JE', count: '28 Papers', examId: 'maha-pwd' as ExamTargetId },
+    { id: 'rrb-je', title: 'RRB JE', subtitle: 'Railway Recruitment Board', count: '32 Papers', examId: 'rrb-je' as ExamTargetId },
+    { id: 'wrd-zp', title: 'WRD & ZP', subtitle: 'Water Resources & Zilla Parishad', count: '42 Papers', examId: 'wrd-je' as ExamTargetId },
+  ];
 
-  const completedPlanTasks = studyPlan.dailyTasks.filter((t) => t.completed).length;
-  const totalPlanTasks = studyPlan.dailyTasks.length;
+  // Practice by Subject list (Civil Engineering subjects as requested)
+  const civilSubjects = [
+    { id: 'som', name: 'Strength of Materials', topics: 18, mcqs: 850, icon: '💪' },
+    { id: 'rcc', name: 'RCC & Reinforced Concrete', topics: 22, mcqs: 1100, icon: '🏗️' },
+    { id: 'steel', name: 'Steel Structures', topics: 16, mcqs: 720, icon: '🔩' },
+    { id: 'soil', name: 'Soil Mechanics', topics: 20, mcqs: 980, icon: '⛏️' },
+    { id: 'fluid', name: 'Fluid Mechanics', topics: 15, mcqs: 800, icon: '🌊' },
+    { id: 'hydraulics', name: 'Hydraulics & Open Channel', topics: 14, mcqs: 650, icon: '🚰' },
+    { id: 'environmental', name: 'Environmental Engineering', topics: 18, mcqs: 890, icon: '🌱' },
+    { id: 'transportation', name: 'Transportation Engineering', topics: 16, mcqs: 780, icon: '🛣️' },
+    { id: 'surveying', name: 'Surveying', topics: 15, mcqs: 920, icon: '📐' },
+    { id: 'mechanics', name: 'Engineering Mechanics', topics: 12, mcqs: 610, icon: '⚙️' },
+    { id: 'estimation', name: 'Estimation & Costing', topics: 14, mcqs: 740, icon: '📊' },
+    { id: 'geotechnical', name: 'Geotechnical Engineering', topics: 19, mcqs: 950, icon: '⛰️' },
+  ];
 
-  const handleAskCoach = async (queryText?: string) => {
-    const textToSend = queryText || coachInput;
-    if (!textToSend.trim()) return;
+  // Mock Test Samples
+  const featuredMockTests = [
+    {
+      id: 'full-cbt-1',
+      title: 'Full Length CBT Mock Test - 01',
+      category: 'Full Length Mock Tests',
+      duration: '120 Mins',
+      questions: '100 Qs',
+      marks: '200 Marks',
+      target: currentExam.shortName,
+      difficulty: 'Exam Pattern',
+    },
+    {
+      id: 'subj-test-rcc',
+      title: 'RCC & Steel Design Special Test',
+      category: 'Subject Tests',
+      duration: '60 Mins',
+      questions: '50 Qs',
+      marks: '100 Marks',
+      target: 'Civil Technical',
+      difficulty: 'Moderate',
+    },
+    {
+      id: 'topic-test-som',
+      title: 'Bending Stress & Shear Force Rapid Test',
+      category: 'Topic Tests',
+      duration: '30 Mins',
+      questions: '25 Qs',
+      marks: '50 Marks',
+      target: 'SOM Mastery',
+      difficulty: 'Speed Test',
+    },
+  ];
 
-    setIsCoachLoading(true);
-    setCoachResponse(null);
+  const handleAskAI = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!aiQuery.trim()) return;
+
+    setIsAiLoading(true);
+    setAiResponse(null);
     try {
-      const reply = await GeminiService.askCoach(textToSend, currentExam.name, 'Civil Engineering Technical');
-      setCoachResponse(reply);
-    } catch (e) {
-      setCoachResponse('Verify IS 456 Cl. 26.5 for minimum steel and IS 800 Table 3 for slenderness ratio limits.');
+      const res = await GeminiService.askCoach(
+        aiQuery,
+        currentExam.name,
+        'Civil Engineering Technical & Practice'
+      );
+      setAiResponse(res);
+    } catch (err) {
+      setAiResponse(
+        'As per IS 456:2000 Cl. 26.5.1.1, the minimum reinforcement in slabs is 0.15% of total cross-sectional area for mild steel and 0.12% for HYSD bars.'
+      );
     } finally {
-      setIsCoachLoading(false);
-      setCoachInput('');
+      setIsAiLoading(false);
     }
   };
 
-  // Weak topics identified by telemetry
-  const weakTopics = [
-    {
-      subjectName: 'Soil Mechanics & Foundation Engg',
-      accuracy: 61,
-      topic: 'Terzaghi 1D Consolidation & Settlement',
-      reason: 'Drainage path calculation & time factor errors',
-      isCode: 'IS 2720',
-      subjectId: 'geotechnical',
-    },
-    {
-      subjectName: 'Design of Steel Structures',
-      accuracy: 64,
-      topic: 'Slenderness Ratio Limits & Welded Joints',
-      reason: 'Reversal of stress under wind/earthquake (Limit = 350)',
-      isCode: 'IS 800:2007',
-      subjectId: 'steel',
-    },
-    {
-      subjectName: 'Fluid Mechanics & Hydraulics',
-      accuracy: 68,
-      topic: 'Specific Energy & Hydraulic Jump',
-      reason: 'Froude number transition & head loss in jumps',
-      isCode: 'IRC / Standard',
-      subjectId: 'fluid',
-    },
-  ];
-
-  // Curated recommended materials
-  const recommendedMaterials = [
-    {
-      title: 'IS 456:2000 Plain & Reinforced Concrete Quick Handbook',
-      code: 'IS 456',
-      type: 'Official Standard',
-      size: '2.4 MB',
-      description: 'Clause 26 detailing, Table 16 nominal cover, Table 20 maximum shear stress.',
-    },
-    {
-      title: 'IS 800:2007 General Construction in Steel Design Charts',
-      code: 'IS 800',
-      type: 'Design Tables',
-      size: '3.1 MB',
-      description: 'Table 3 slenderness ratios, Table 5 partial safety factors, weld strength tables.',
-    },
-    {
-      title: 'Strength of Materials (SOM) Formula Handbook',
-      code: 'SOM Handbook',
-      type: 'Formula Sheet',
-      size: '1.8 MB',
-      description: 'Bending stress, shear stress distribution, Mohr circle and deflection formulas.',
-    },
-    {
-      title: 'IRC: 37-2018 Flexible Pavement Design Guidelines',
-      code: 'IRC 37',
-      type: 'Highway Standard',
-      size: '4.2 MB',
-      description: 'CBR design curves, cumulative standard axles (msa), and fatigue criteria.',
-    },
-  ];
-
   return (
-    <div className="space-y-6">
-      {/* 1. Blueprint Header Hero Banner */}
-      <div className="rounded-xl bg-blueprint-dark border border-sky-500/20 text-white p-5 sm:p-6 shadow-lg relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-sky-500/5 to-transparent pointer-events-none hidden md:block" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-mono text-xs font-bold border border-sky-400/30">
-                {profile.qualification}
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-xs font-bold border border-amber-400/30">
-                Target: {currentExam.shortName}
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold border border-emerald-400/30 flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3" />
-                <span>{profile.subscriptionTier}</span>
-              </span>
-            </div>
-
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
-              <span>Welcome back, Engineer {profile.name.split(' ')[0]}!</span>
-              <HardHat className="w-6 h-6 text-sky-400 inline shrink-0" />
+    <div className="space-y-5 max-w-5xl mx-auto pb-12 text-slate-800 font-sans">
+      {/* 1. PROFESSIONAL HEADER */}
+      <header className="bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-xs flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 rounded-lg bg-blue-900 text-white flex items-center justify-center font-bold shadow-xs">
+            <HardHat className="w-5 h-5 text-sky-400" />
+          </div>
+          <div>
+            <h1 className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 leading-tight">
+              ENGINEERING OFFICER
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Your comprehensive Civil Engineering preparation hub for Maharashtra PWD, MPSC MES, SSC JE, WRD, ZP & State Engineering Services.
-            </p>
-          </div>
-
-          {/* Today's Practice & Daily Target Progress Card */}
-          <div className="bg-slate-900/90 rounded-lg p-4 border border-sky-500/30 sm:min-w-[270px] flex flex-col justify-between shadow-inner">
-            <div className="flex items-center justify-between text-xs mb-2">
-              <span className="text-slate-300 font-medium">Today's Practice Target</span>
-              <span className="font-bold text-sky-400 font-mono">
-                {profile.solvedToday} / {profile.dailyGoalQuestions} MCQs
-              </span>
-            </div>
-            {/* Progress bar */}
-            <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden mb-3 border border-slate-700">
-              <div
-                className="bg-gradient-to-r from-sky-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500"
-                style={{ width: `${goalPercent}%` }}
-              />
-            </div>
-            <div className="flex items-center justify-between text-[11px] text-slate-400">
-              <span className="flex items-center text-amber-400 font-semibold">
-                <Flame className="w-3.5 h-3.5 mr-1 fill-amber-400" />
-                {profile.streakDays} Day Streak
-              </span>
-              <button
-                id="hero-quick-practice-btn"
-                onClick={() => setActiveView('practice')}
-                className="text-sky-300 hover:text-white font-bold flex items-center"
-              >
-                Solve MCQs <ChevronRight className="w-3 h-3 ml-0.5" />
-              </button>
-            </div>
+            <p className="text-[11px] text-slate-500 font-medium">Civil Engineering Prep Platform</p>
           </div>
         </div>
-      </div>
 
-      {/* 2. Streak & Active Study Plan Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Streak & Consistency Card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                  <Flame className="w-5 h-5 fill-amber-500 text-amber-500" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-sm">Preparation Streak</h3>
-                  <p className="text-[11px] text-slate-500">Continuous daily practice</p>
-                </div>
-              </div>
-              <span className="text-xl font-extrabold text-amber-600 font-mono">
-                {profile.streakDays} <span className="text-xs font-medium text-slate-500">Days</span>
-              </span>
-            </div>
-
-            {/* 7-Day Consistency Tracker */}
-            <div className="mt-3 pt-3 border-t border-slate-100">
-              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-400 mb-2">
-                <span>MON</span>
-                <span>TUE</span>
-                <span>WED</span>
-                <span>THU</span>
-                <span>FRI</span>
-                <span>SAT</span>
-                <span>TODAY</span>
-              </div>
-              <div className="flex items-center justify-between">
-                {[1, 2, 3, 4, 5, 6, 7].map((day) => (
-                  <div
-                    key={day}
-                    className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-700 border border-amber-400/40 flex items-center justify-center text-xs font-bold"
-                  >
-                    ✓
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <p className="text-[11px] text-slate-500 mt-3 pt-2 border-t border-slate-100 italic">
-            "Engineering discipline builds monuments. Keep the streak going!"
-          </p>
-        </div>
-
-        {/* Active Study Plan Banner Widget */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
-                  <Calendar className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-sm">Today's Active Study Plan</h3>
-                  <p className="text-[11px] text-slate-500">
-                    Target: {studyPlan.targetExamName} ({studyPlan.dailyHours} Hours Budget)
-                  </p>
-                </div>
-              </div>
-
-              <span className="text-xs font-mono font-bold px-2.5 py-1 rounded bg-sky-50 text-sky-700 border border-sky-200">
-                {completedPlanTasks} / {totalPlanTasks} Tasks Completed
-              </span>
-            </div>
-
-            {/* Tasks Preview */}
-            <div className="space-y-2 mt-3">
-              {studyPlan.dailyTasks.slice(0, 2).map((task) => (
-                <div
-                  key={task.id}
-                  onClick={() => setActiveView('study-planner')}
-                  className={`p-2.5 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-all ${
-                    task.completed
-                      ? 'bg-emerald-50/40 border-emerald-200 text-slate-500 line-through'
-                      : 'bg-slate-50/70 border-slate-200 hover:border-sky-300 text-slate-800'
-                  }`}
-                >
-                  <div className="flex items-center space-x-2 truncate">
-                    {task.completed ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    ) : (
-                      <div className="w-3.5 h-3.5 rounded-full border border-slate-300 shrink-0" />
-                    )}
-                    <span className="font-medium truncate">{task.title}</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-slate-500 shrink-0 pl-2">
-                    {task.allocatedMinutes} min
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
-            <span className="text-xs text-slate-500">
-              Syllabus Coverage: <strong>{studyPlan.syllabusCoveragePercent}%</strong>
-            </span>
-            <button
-              id="dash-open-planner-btn"
-              onClick={() => setActiveView('study-planner')}
-              className="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center space-x-1"
-            >
-              <span>Manage Study Plan & Tasks</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Core Quick Action Matrix (Mocks, PYQs, Mistake Notebook, Bookmarks) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {/* CBT Mock Test */}
-        <div
-          id="dash-card-mock-tests"
-          onClick={() => setActiveView('mock-tests')}
-          className="bg-white rounded-xl p-4 border border-slate-200 hover:border-sky-400 shadow-xs hover:shadow-md cursor-pointer transition-all group"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-              <FileCheck2 className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-100 text-sky-800">
-              Live CBT
-            </span>
-          </div>
-          <h3 className="font-bold text-slate-900 text-sm group-hover:text-sky-600 transition-colors">
-            CBT Mock Tests
-          </h3>
-          <p className="text-xs text-slate-500 mt-1">
-            {mockTests.length} Full & Sectional exams with negative marking.
-          </p>
-        </div>
-
-        {/* PYQs */}
-        <div
-          id="dash-card-pyqs"
-          onClick={() => setActiveView('pyqs')}
-          className="bg-white rounded-xl p-4 border border-slate-200 hover:border-emerald-400 shadow-xs hover:shadow-md cursor-pointer transition-all group"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-              <History className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-mono">
-              2015-2024
-            </span>
-          </div>
-          <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors">
-            Official PYQs
-          </h3>
-          <p className="text-xs text-slate-500 mt-1">
-            MPSC MES, Maha PWD, WRD, ZP & SSC JE papers.
-          </p>
-        </div>
-
-        {/* Mistake Notebook */}
-        <div
-          id="dash-card-mistakes"
-          onClick={() => setActiveView('mistakes')}
-          className="bg-white rounded-xl p-4 border border-slate-200 hover:border-rose-400 shadow-xs hover:shadow-md cursor-pointer transition-all group"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-              <AlertOctagon className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-mono">
-              {mistakeCount} Logged
-            </span>
-          </div>
-          <h3 className="font-bold text-slate-900 text-sm group-hover:text-rose-600 transition-colors">
-            Mistake Notebook
-          </h3>
-          <p className="text-xs text-slate-500 mt-1">
-            {spacedDueToday > 0 ? (
-              <span className="text-rose-600 font-semibold">{spacedDueToday} Due for Retest Today</span>
-            ) : (
-              'Auto-logged wrong MCQs with reason tags'
-            )}
-          </p>
-        </div>
-
-        {/* Bookmarks */}
-        <div
-          id="dash-card-bookmarks"
-          onClick={() => setActiveView('practice')}
-          className="bg-white rounded-xl p-4 border border-slate-200 hover:border-amber-400 shadow-xs hover:shadow-md cursor-pointer transition-all group"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-              <Bookmark className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-mono">
-              {profile.savedQuestionIds.length} Saved
-            </span>
-          </div>
-          <h3 className="font-bold text-slate-900 text-sm group-hover:text-amber-600 transition-colors">
-            Saved Bookmarks
-          </h3>
-          <p className="text-xs text-slate-500 mt-1">High-yield standard codal questions for quick recall.</p>
-        </div>
-      </div>
-
-      {/* 4. Weak Topics & Diagnostic Radar */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <AlertTriangle className="w-5 h-5 text-amber-600" />
-            <div>
-              <h2 className="font-bold text-slate-900 text-base">
-                Telemetry Weak Topics Radar (High Yield Errors)
-              </h2>
-              <p className="text-xs text-slate-500">
-                Identified based on your test attempts. Drill these topics to gain +15-20 marks.
-              </p>
-            </div>
-          </div>
+        <div className="flex items-center space-x-2">
+          {/* Notifications Button */}
           <button
-            onClick={() => setActiveView('practice')}
-            className="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center"
-          >
-            All Subjects <ChevronRight className="w-4 h-4 ml-0.5" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {weakTopics.map((topic, idx) => (
-            <div
-              key={idx}
-              className="p-4 rounded-xl border border-amber-200/80 bg-amber-50/30 hover:bg-amber-50/70 transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                  <span className="text-amber-900 font-mono text-[11px] bg-amber-100 px-2 py-0.5 rounded">
-                    {topic.isCode}
-                  </span>
-                  <span className="text-rose-600 font-mono font-bold">
-                    {topic.accuracy}% Accuracy
-                  </span>
-                </div>
-                <h3 className="font-bold text-slate-900 text-sm">{topic.subjectName}</h3>
-                <p className="text-xs text-slate-700 font-medium mt-1">{topic.topic}</p>
-                <p className="text-[11px] text-slate-500 mt-1">{topic.reason}</p>
-              </div>
-
-              <div className="mt-4 pt-2 border-t border-amber-200/60 flex items-center justify-between">
-                <span className="text-[10px] text-amber-800 font-mono">Priority: HIGH</span>
-                <button
-                  id={`drill-weak-topic-${idx}`}
-                  onClick={() => setActiveView('practice')}
-                  className="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center space-x-1"
-                >
-                  <span>Drill Topic</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 5. Recruitment Deadlines & Ticker */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <Briefcase className="w-5 h-5 text-sky-600" />
-            <div>
-              <h2 className="font-bold text-slate-900 text-base">
-                Upcoming Recruitment Application Deadlines & Exam Dates
-              </h2>
-              <p className="text-xs text-slate-500">
-                Official notifications tracked across Maharashtra State Engineering Services
-              </p>
-            </div>
-          </div>
-          <button
-            id="view-all-notices-btn"
+            id="home-notifications-btn"
             onClick={() => setActiveView('notices')}
-            className="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center"
+            className="relative p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+            aria-label="Notifications"
           >
-            All 15 Cadres <ChevronRight className="w-4 h-4 ml-0.5" />
+            <Bell className="w-5 h-5" />
+            {unreadNotifications > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-600 ring-2 ring-white" />
+            )}
+          </button>
+
+          {/* Profile Avatar */}
+          <button
+            id="home-profile-avatar-btn"
+            onClick={() => setActiveView('profile')}
+            className="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-bold border border-slate-700 hover:opacity-90 transition-opacity"
+            aria-label="Profile"
+          >
+            {profile.name ? profile.name.charAt(0).toUpperCase() : 'E'}
+          </button>
+        </div>
+      </header>
+
+      {/* 2. HERO SECTION */}
+      <section className="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 text-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-800 relative overflow-hidden">
+        <div className="relative z-10 space-y-3">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              Engineering Exam Preparation
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
+              Practice Civil Engineering questions, Previous Year Papers and CBT Mock Tests.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            <button
+              id="hero-start-practice-btn"
+              onClick={() => setActiveView('practice')}
+              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
+            >
+              <span>START PRACTICE</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+
+            <button
+              id="hero-explore-exams-btn"
+              onClick={() => setActiveView('exam-ecosystem')}
+              className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-colors cursor-pointer"
+            >
+              EXPLORE EXAMS
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. MAIN ACTION GRID */}
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        {/* Card 1: EXAMS */}
+        <button
+          id="action-card-exams"
+          onClick={() => setActiveView('exam-ecosystem')}
+          className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs hover:border-blue-500 hover:shadow-md transition-all text-left flex flex-col justify-between group cursor-pointer"
+        >
+          <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Building2 className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
+              EXAMS
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">All Engineering Exams</p>
+          </div>
+        </button>
+
+        {/* Card 2: PREVIOUS PAPERS */}
+        <button
+          id="action-card-papers"
+          onClick={() => setActiveView('pyqs')}
+          className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs hover:border-blue-500 hover:shadow-md transition-all text-left flex flex-col justify-between group cursor-pointer"
+        >
+          <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <FileText className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
+              PREVIOUS PAPERS
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Year-wise Question Papers</p>
+          </div>
+        </button>
+
+        {/* Card 3: PRACTICE */}
+        <button
+          id="action-card-practice"
+          onClick={() => setActiveView('practice')}
+          className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs hover:border-blue-500 hover:shadow-md transition-all text-left flex flex-col justify-between group cursor-pointer"
+        >
+          <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Target className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
+              PRACTICE
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Subject & Topic MCQs</p>
+          </div>
+        </button>
+
+        {/* Card 4: MOCK TESTS */}
+        <button
+          id="action-card-mock-tests"
+          onClick={() => setActiveView('mock-tests')}
+          className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs hover:border-blue-500 hover:shadow-md transition-all text-left flex flex-col justify-between group cursor-pointer"
+        >
+          <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <FileCheck2 className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
+              MOCK TESTS
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Full CBT Tests</p>
+          </div>
+        </button>
+      </section>
+
+      {/* 4. CONTINUE PRACTICE SECTION */}
+      <section className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs">
+        {hasUnfinishedPractice ? (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider">
+                Continue Practice
+              </span>
+              <h3 className="font-bold text-sm sm:text-base text-slate-900">
+                {recentSubject.name} — Limit State Design
+              </h3>
+              <p className="text-xs text-slate-500 font-medium">
+                25 Questions · {profile.solvedToday > 0 ? profile.solvedToday : 8} Attempted
+              </p>
+            </div>
+
+            <button
+              id="continue-practice-btn"
+              onClick={() => setActiveView('practice')}
+              className="px-4 py-2 bg-blue-900 hover:bg-slate-900 text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center space-x-1 sm:self-center cursor-pointer"
+            >
+              <span>CONTINUE</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="font-bold text-sm text-slate-900">Start Your First Practice</h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Select a Civil Engineering subject and solve topic-wise MCQs.
+              </p>
+            </div>
+            <button
+              id="start-first-practice-btn"
+              onClick={() => setActiveView('practice')}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer"
+            >
+              START PRACTICE →
+            </button>
+          </div>
+        )}
+      </section>
+
+      {/* 5. PREVIOUS YEAR PAPERS */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="font-bold text-base text-slate-900">Previous Year Papers</h2>
+          <button
+            id="pyq-view-all-btn"
+            onClick={() => setActiveView('pyqs')}
+            className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center space-x-0.5"
+          >
+            <span>VIEW ALL</span>
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {activeNotices.slice(0, 2).map((notice) => (
+        {/* Horizontal scroll section */}
+        <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-none -mx-1 px-1">
+          {pyqCategories.map((cat) => (
             <div
-              key={notice.id}
-              onClick={() => setActiveView('notices')}
-              className="p-4 rounded-lg bg-slate-50 hover:bg-sky-50/50 border border-slate-200 hover:border-sky-300 transition-all cursor-pointer flex flex-col justify-between"
+              key={cat.id}
+              onClick={() => {
+                setSelectedExam(cat.examId);
+                setActiveView('pyqs');
+              }}
+              className="min-w-[180px] sm:min-w-[200px] bg-white rounded-xl border border-slate-200 p-3.5 shadow-xs hover:border-blue-500 transition-all cursor-pointer flex flex-col justify-between shrink-0"
             >
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 uppercase">
-                    {notice.status}
-                  </span>
-                  <span className="text-xs font-mono font-bold text-sky-700">
-                    {notice.totalVacancies} Vacancies
-                  </span>
-                </div>
-                <h3 className="font-bold text-slate-900 text-sm">{notice.postName}</h3>
-                <p className="text-xs text-slate-600 mt-0.5 line-clamp-1">{notice.deptName}</p>
+                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+                  {cat.count}
+                </span>
+                <h3 className="font-bold text-sm text-slate-900 mt-1">{cat.title}</h3>
+                <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">{cat.subtitle}</p>
               </div>
-              <div className="mt-3 pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500">
-                <span className="font-semibold text-rose-600">
-                  Last Date: {notice.applyEndDate}
-                </span>
-                <span className="font-medium text-sky-600 flex items-center">
-                  Official PDF & Apply <ArrowUpRight className="w-3 h-3 ml-0.5" />
-                </span>
+              <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-blue-600 font-bold">
+                <span>Explore Papers</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* 6. AI Study Coach (SP AI) & Recommended Materials */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* SP AI Study Coach Card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                  <Bot className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-sm">Er. SP AI Study Coach</h3>
-                  <p className="text-[11px] text-slate-500">Civil Engineering Gemini Specialist</p>
-                </div>
-              </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">
-                Active Mentor
-              </span>
-            </div>
-
-            {/* Quick Prompt Chips */}
-            <div className="flex flex-wrap gap-1.5 mb-3">
-              {[
-                'Explain IS 456 Cl. 26.5.1',
-                'Why limit slenderness to 180?',
-                'Derive maximum shear in I-beam',
-                'Terzaghi 1D consolidation formula',
-              ].map((chip, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleAskCoach(chip)}
-                  className="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 font-medium transition-colors border border-slate-200"
-                >
-                  {chip}
-                </button>
-              ))}
-            </div>
-
-            {/* Response Box if available */}
-            {coachResponse && (
-              <div className="p-3 mb-3 bg-indigo-50/70 rounded-lg border border-indigo-200 text-xs text-slate-800 max-h-40 overflow-y-auto leading-relaxed">
-                <p className="font-semibold text-indigo-950 mb-1">Mentor Explanation:</p>
-                <div className="whitespace-pre-line">{coachResponse}</div>
-              </div>
-            )}
-
-            {isCoachLoading && (
-              <div className="p-3 mb-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-500 flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 text-indigo-600 animate-spin" />
-                <span>Formulating codal derivation and IS reference...</span>
-              </div>
-            )}
-          </div>
-
-          {/* Prompt Input */}
-          <div className="flex items-center space-x-2 pt-2 border-t border-slate-100">
-            <input
-              type="text"
-              placeholder="Ask formula derivation, IS code clause or concept..."
-              value={coachInput}
-              onChange={(e) => setCoachInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAskCoach()}
-              className="flex-1 px-3 py-2 rounded-lg border border-slate-300 text-xs text-slate-800"
-            />
-            <button
-              id="dash-ask-coach-btn"
-              onClick={() => handleAskCoach()}
-              disabled={isCoachLoading}
-              className="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center space-x-1"
-            >
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </div>
+      {/* 6. PRACTICE BY SUBJECT */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="font-bold text-base text-slate-900">Practice By Subject</h2>
+          <span className="text-xs text-slate-500">12 Civil Subjects</span>
         </div>
 
-        {/* Recommended Civil Study Materials */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                  <FileText className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-sm">Recommended Standard References</h3>
-                  <p className="text-[11px] text-slate-500">Essential handbooks & IS/IRC codes</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {civilSubjects.map((sub) => (
+            <div
+              key={sub.id}
+              onClick={() => setActiveView('practice')}
+              className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-xs hover:border-blue-500 hover:shadow-sm transition-all cursor-pointer flex flex-col justify-between group"
+            >
+              <div>
+                <div className="text-xl mb-2">{sub.icon}</div>
+                <h3 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
+                  {sub.name}
+                </h3>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100">
+                {sub.topics} Topics · {sub.mcqs}+ MCQs
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 7. MOCK TEST SECTION */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="font-bold text-base text-slate-900">Mock Tests</h2>
+          <button
+            id="mock-tests-view-all-btn"
+            onClick={() => setActiveView('mock-tests')}
+            className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center space-x-0.5"
+          >
+            <span>VIEW ALL MOCKS</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="space-y-2.5">
+          {featuredMockTests.map((test) => (
+            <div
+              key={test.id}
+              className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-blue-300 transition-all"
+            >
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+                  {test.category}
+                </span>
+                <h3 className="font-bold text-sm text-slate-900">{test.title}</h3>
+                <div className="flex items-center space-x-3 text-xs text-slate-500 font-medium pt-0.5">
+                  <span className="flex items-center space-x-1">
+                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                    <span>{test.duration}</span>
+                  </span>
+                  <span>·</span>
+                  <span>{test.questions}</span>
+                  <span>·</span>
+                  <span>{test.marks}</span>
                 </div>
               </div>
+
               <button
-                onClick={() => setActiveView('materials')}
-                className="text-xs font-bold text-sky-600 hover:text-sky-800"
+                id={`attempt-mock-${test.id}`}
+                onClick={() => setActiveView('mock-tests')}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors shrink-0 cursor-pointer text-center"
               >
-                All Materials →
+                ATTEMPT TEST
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 8. AI SECTION */}
+      <section className="bg-gradient-to-r from-blue-950 via-slate-900 to-blue-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-sky-400" />
+            <h3 className="font-bold text-sm sm:text-base text-white">
+              AI Engineering Study Assistant
+            </h3>
+          </div>
+          <p className="text-xs text-slate-300">
+            Generate practice questions, explanations and revision help.
+          </p>
+        </div>
+
+        <button
+          id="ask-ai-bottom-btn"
+          onClick={() => setShowAIModal(true)}
+          className="px-4 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold rounded-xl transition-colors shrink-0 flex items-center justify-center space-x-1.5 cursor-pointer shadow-xs"
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>ASK AI</span>
+        </button>
+      </section>
+
+      {/* AI Assistant Quick Query Modal */}
+      {showAIModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-slate-200 max-w-lg w-full p-5 shadow-xl space-y-4 relative">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center space-x-2 text-blue-900">
+                <Sparkles className="w-5 h-5 text-sky-500" />
+                <h3 className="font-bold text-base text-slate-900">AI Engineering Assistant</h3>
+              </div>
+              <button
+                onClick={() => setShowAIModal(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-2.5">
-              {recommendedMaterials.map((mat, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => setActiveView('materials')}
-                  className="p-2.5 rounded-lg border border-slate-200 hover:border-emerald-300 bg-slate-50/50 hover:bg-emerald-50/30 transition-all cursor-pointer flex items-center justify-between"
-                >
-                  <div className="truncate pr-2">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
-                        {mat.code}
-                      </span>
-                      <h4 className="font-semibold text-slate-900 text-xs truncate">{mat.title}</h4>
-                    </div>
-                    <p className="text-[11px] text-slate-500 truncate mt-0.5">{mat.description}</p>
-                  </div>
-                  <span className="text-[11px] font-mono text-emerald-700 font-bold shrink-0">
-                    Read
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>Standard Bureau of Indian Standards (BIS) & IRC Compliant</span>
-            <button
-              onClick={() => setActiveView('materials')}
-              className="text-sky-600 font-bold hover:underline"
-            >
-              Open E-Library
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 7. Active Plan & Notifications Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Active Plan Card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-sky-100 text-sky-800">
-                MEMBERSHIP TIER
-              </span>
-              <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Active</span>
-              </span>
-            </div>
-
-            <h3 className="text-lg font-bold text-slate-900">{profile.subscriptionTier}</h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Valid until: <strong>{profile.subscriptionExpiry || '2025-12-31'}</strong>
+            <p className="text-xs text-slate-600">
+              Ask any Civil Engineering question, IS Code clause (IS 456, IS 800, IRC), or topic explanation.
             </p>
 
-            <ul className="mt-3 space-y-1.5 text-xs text-slate-600">
-              <li className="flex items-center space-x-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-                <span>Unlimited Full-Length CBT Mock Tests</span>
-              </li>
-              <li className="flex items-center space-x-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-                <span>Leitner Spaced Mistake Retesting Queue</span>
-              </li>
-              <li className="flex items-center space-x-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-                <span>Official PYQ Archive (2015-2024)</span>
-              </li>
-              <li className="flex items-center space-x-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-                <span>Er. SP AI Study Coach Access</span>
-              </li>
-            </ul>
-          </div>
+            <form onSubmit={handleAskAI} className="space-y-3">
+              <textarea
+                value={aiQuery}
+                onChange={(e) => setAiQuery(e.target.value)}
+                placeholder="e.g. Explain minimum shear reinforcement formula in IS 456..."
+                className="w-full h-24 p-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800"
+              />
 
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-            <span className="text-xs font-mono text-slate-500">Referral Code: {profile.referralCode}</span>
-            <button
-              id="dash-upgrade-plan-btn"
-              onClick={() => setActiveView('plans')}
-              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white transition-colors"
-            >
-              Manage / Upgrade
-            </button>
-          </div>
-        </div>
-
-        {/* Notifications & Announcements Feed */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <Bell className="w-5 h-5 text-sky-600" />
-                <h3 className="font-bold text-slate-900 text-sm">Official Notifications & Updates</h3>
-              </div>
-              <button
-                onClick={() => setActiveView('notifications')}
-                className="text-xs font-bold text-sky-600 hover:text-sky-800"
-              >
-                View All Notifications →
-              </button>
-            </div>
-
-            <div className="space-y-2.5">
-              {notifications.slice(0, 3).map((notif) => (
-                <div
-                  key={notif.id}
-                  onClick={() => {
-                    if (notif.actionLink) setActiveView(notif.actionLink);
-                  }}
-                  className={`p-3 rounded-lg border text-xs cursor-pointer transition-all flex items-start justify-between ${
-                    notif.read
-                      ? 'bg-slate-50/50 border-slate-200 text-slate-600'
-                      : 'bg-sky-50/40 border-sky-200 text-slate-900 font-medium'
-                  }`}
+              <div className="flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAIModal(false)}
+                  className="px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg"
                 >
-                  <div className="space-y-0.5">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-bold text-slate-900">{notif.title}</span>
-                      {!notif.read && (
-                        <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
-                      )}
-                    </div>
-                    <p className="text-[11px] text-slate-500">{notif.message}</p>
-                  </div>
-                  <span className="text-[10px] font-mono text-slate-400 shrink-0 ml-2">
-                    {notif.date}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  disabled={isAiLoading || !aiQuery.trim()}
+                  className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 flex items-center space-x-1.5"
+                >
+                  {isAiLoading ? (
+                    <span>Generating...</span>
+                  ) : (
+                    <>
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Ask Assistant</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
 
-          <div className="mt-3 pt-2 border-t border-slate-100 text-[11px] text-slate-400 text-right">
-            Real-time synchronization with MPSC, Maha PWD, and SSC official portals
+            {aiResponse && (
+              <div className="p-3.5 bg-blue-50/60 border border-blue-200 rounded-xl text-xs text-slate-800 max-h-48 overflow-y-auto leading-relaxed">
+                <p className="font-bold text-blue-900 mb-1">AI Solution:</p>
+                {aiResponse}
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

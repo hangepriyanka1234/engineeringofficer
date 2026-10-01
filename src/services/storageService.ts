@@ -85,9 +85,9 @@ const STORAGE_KEYS = {
 
 const DEFAULT_PROFILE: StudentProfile = {
   id: 'usr-sp-001',
-  name: 'Priyanka Hange',
-  email: 'hangepriyanka1234@gmail.com',
-  phone: '+91 98765 43210',
+  name: 'Vijay Gite',
+  email: 'gitevijay123@gmail.com',
+  phone: '+91 93708 72123',
   qualification: 'B.E. / B.Tech in Civil Engineering',
   passingYear: '2024',
   graduationYear: '2024',

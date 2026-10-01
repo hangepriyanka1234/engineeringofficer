@@ -117,7 +117,7 @@ export class ServerMistakeEngine {
 
   static initialize() {
     if (this.userMistakes.size === 0) {
-      this.seedInitialStudentMistakes('hangepriyanka1234@gmail.com');
+      this.seedInitialStudentMistakes('gitevijay123@gmail.com');
       this.seedInitialStudentMistakes('default@student.sp');
     }
   }

@@ -1054,7 +1054,7 @@ function buildDefaultMaterializedAnalytics(userEmail: string): AnalyticsSummaryP
 
 export class ServerAnalyticsEngine {
   // Retrieve cached or dynamically materialized summary view
-  static getStudentAnalytics(userEmail: string = 'hangepriyanka1234@gmail.com'): AnalyticsSummaryPayload {
+  static getStudentAnalytics(userEmail: string = 'gitevijay123@gmail.com'): AnalyticsSummaryPayload {
     const emailKey = userEmail.toLowerCase().trim();
 
     // Check in-memory store

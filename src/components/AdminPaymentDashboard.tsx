@@ -39,7 +39,7 @@ import {
 
 export const AdminPaymentDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'plans' | 'coupons' | 'transactions' | 'entitlements' | 'audit'
+    'overview' | 'plans' | 'coupons' | 'transactions' | 'entitlements' | 'audit' | 'razorpay-config'
   >('overview');
 
   const [stats, setStats] = useState<PaymentDashboardStats | null>(null);
@@ -48,6 +48,12 @@ export const AdminPaymentDashboard: React.FC = () => {
   const [transactions, setTransactions] = useState<PaymentTransactionRecord[]>([]);
   const [auditLogs, setAuditLogs] = useState<PaymentAuditLogRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Razorpay Config State
+  const [rzpKeyId, setRzpKeyId] = useState<string>('');
+  const [rzpKeySecret, setRzpKeySecret] = useState<string>('');
+  const [rzpWebhookSecret, setRzpWebhookSecret] = useState<string>('');
+  const [rzpSaved, setRzpSaved] = useState<boolean>(false);
 
   // Plan Edit Modal State
   const [editingPlan, setEditingPlan] = useState<Partial<PlanRecord> | null>(null);
@@ -227,11 +233,12 @@ export const AdminPaymentDashboard: React.FC = () => {
       <div className="flex overflow-x-auto gap-2 border-b border-slate-200 pb-2">
         {[
           { id: 'overview', label: 'Revenue & Analytics', icon: TrendingUp },
+          { id: 'razorpay-config', label: 'Razorpay Keys & ₹299 Setup', icon: Key },
           { id: 'plans', label: 'Plan Configurator', icon: Layers },
           { id: 'coupons', label: 'Coupons Engine', icon: Tag },
           { id: 'transactions', label: 'Transactions & Orders', icon: CreditCard },
           { id: 'entitlements', label: 'Student Entitlements', icon: ShieldCheck },
-          { id: 'audit', label: 'Audit Trail & Webhooks', icon: Key },
+          { id: 'audit', label: 'Audit Trail & Webhooks', icon: ShieldCheck },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -807,6 +814,130 @@ export const AdminPaymentDashboard: React.FC = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* --------------------------------------------------------------------- */}
+      {/* TAB: RAZORPAY CONFIG & MERCHANT COMPLIANCE */}
+      {/* --------------------------------------------------------------------- */}
+      {activeTab === 'razorpay-config' && (
+        <div className="space-y-6">
+          <div className="p-6 bg-gradient-to-r from-blue-900 to-indigo-950 rounded-2xl text-white space-y-2 border border-blue-400/30 shadow-lg">
+            <div className="flex items-center space-x-2">
+              <Key className="w-5 h-5 text-amber-400" />
+              <h3 className="text-base font-bold">Razorpay Live Gateway & ₹299 Master Plan Approval</h3>
+            </div>
+            <p className="text-xs text-blue-200">
+              Configure your Razorpay Merchant Keys (Key ID & Key Secret) to accept live student payments via UPI (GPay, PhonePe, Paytm), Net Banking, Cards & Wallets.
+            </p>
+          </div>
+
+          {rzpSaved && (
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-semibold flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <span>Razorpay configuration updated successfully!</span>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+              <h4 className="text-sm font-bold text-slate-900">API Credentials</h4>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Razorpay Key ID</label>
+                <input
+                  type="text"
+                  value={rzpKeyId}
+                  onChange={(e) => setRzpKeyId(e.target.value)}
+                  placeholder="rzp_live_xxxxxxxx or rzp_test_xxxxxxxx"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Razorpay Key Secret</label>
+                <input
+                  type="password"
+                  value={rzpKeySecret}
+                  onChange={(e) => setRzpKeySecret(e.target.value)}
+                  placeholder="Enter Key Secret"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Webhook Secret (Optional)</label>
+                <input
+                  type="password"
+                  value={rzpWebhookSecret}
+                  onChange={(e) => setRzpWebhookSecret(e.target.value)}
+                  placeholder="whsec_xxxxxxxx"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await fetch('/api/razorpay/config', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        keyId: rzpKeyId,
+                        keySecret: rzpKeySecret,
+                        webhookSecret: rzpWebhookSecret,
+                      }),
+                    });
+                    setRzpSaved(true);
+                    setTimeout(() => setRzpSaved(false), 3000);
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }}
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
+              >
+                Save Razorpay Keys
+              </button>
+            </div>
+
+            <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+              <h4 className="text-sm font-bold text-slate-900">₹299 Flagship Plan Details for Razorpay Approval</h4>
+              
+              <div className="p-3.5 bg-blue-50 rounded-xl border border-blue-200 space-y-1.5 text-xs text-blue-950">
+                <div className="font-bold flex items-center justify-between">
+                  <span>₹299 Civil Officer Master Pass</span>
+                  <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[10px]">Active</span>
+                </div>
+                <p className="text-[11px] text-blue-800">
+                  Full 1-Year access to 20,000+ MCQs, Exam PYQs (MPSC MES, PWD, WRD, ZP, BMC), CBT Mock Tests, and AI Explanations.
+                </p>
+                <div className="font-mono text-xs font-bold text-slate-900 pt-1">
+                  Price: ₹299 (Discounted from ₹999)
+                </div>
+              </div>
+
+              <div className="space-y-2 text-xs text-slate-600">
+                <div className="font-bold text-slate-800">Razorpay Merchant Approval Requirements:</div>
+                <div className="flex items-center gap-2 text-emerald-700">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>Terms & Conditions Page active</span>
+                </div>
+                <div className="flex items-center gap-2 text-emerald-700">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>Privacy Policy & SSL Encryption active</span>
+                </div>
+                <div className="flex items-center gap-2 text-emerald-700">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>7-Day Refund / Cancellation Policy active</span>
+                </div>
+                <div className="flex items-center gap-2 text-emerald-700">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>Merchant Contact & Grievance Support displayed</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

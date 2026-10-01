@@ -26,6 +26,44 @@ export const StudyMaterialsView: React.FC<StudyMaterialsViewProps> = ({
 }) => {
   const [selectedType, setSelectedType] = useState<string>('all');
   const [activeModalMaterial, setActiveModalMaterial] = useState<StudyMaterial | null>(null);
+  const [downloadToast, setDownloadToast] = useState<string | null>(null);
+
+  const handleDownload = (mat: StudyMaterial) => {
+    const textContent = `================================================================================
+ENGINEERING OFFICER BY MH — CIVIL COMPETITIVE EXAM REFERENCE MATERIAL
+================================================================================
+TITLE: ${mat.title}
+PAGES: ${mat.pages} | FILE SIZE: ${mat.fileSize}
+SUBJECT: ${mat.subjectId.toUpperCase()}
+TARGET EXAMS: Maha PWD JE/CEA, MPSC Civil, WRD, ZP Civil, SSC JE, RRB JE
+
+--------------------------------------------------------------------------------
+KEY EXAM CLAUSES & HIGHLIGHTS:
+--------------------------------------------------------------------------------
+${mat.highlights.map((h, i) => `[${i + 1}] ${h}`).join('\n')}
+
+--------------------------------------------------------------------------------
+EXECUTIVE STUDY NOTES & CODAL PROVISIONS:
+- Prepared in accordance with IS 456:2000, IS 800:2007, IS 1343, and IRC Specifications.
+- Complete with limit state design methodology, partial safety factors, deflection limits.
+- Practice related previous year questions (PYQs) directly in the app's PYQ Master Papers.
+
+Engineering Officer BY MH — Verified Civil Engineering Preparation Portal
+================================================================================
+`;
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${mat.title.replace(/[^a-zA-Z0-9]/g, '_')}_StudyNotes.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setDownloadToast(`"${mat.title}" यशस्वीरित्या डाऊनलोड झाले!`);
+    setTimeout(() => setDownloadToast(null), 3500);
+  };
 
   const filteredMaterials = materials.filter(
     (m) => selectedType === 'all' || m.type === selectedType
@@ -127,10 +165,10 @@ export const StudyMaterialsView: React.FC<StudyMaterialsViewProps> = ({
                     </button>
                   ) : (
                     <button
-                      onClick={() => alert(`Downloading ${mat.title}...`)}
-                      className="px-3.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center space-x-1 shadow-xs"
+                      onClick={() => handleDownload(mat)}
+                      className="px-3.5 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-600 text-white text-xs font-bold flex items-center space-x-1 shadow-xs transition-colors"
                     >
-                      <Download className="w-3 h-3" />
+                      <Download className="w-3.5 h-3.5" />
                       <span>Download PDF</span>
                     </button>
                   )}
@@ -140,6 +178,14 @@ export const StudyMaterialsView: React.FC<StudyMaterialsViewProps> = ({
           );
         })}
       </div>
+
+      {/* Instant Download Toast */}
+      {downloadToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center space-x-2 animate-in fade-in slide-in-from-bottom-2">
+          <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{downloadToast}</span>
+        </div>
+      )}
 
       {/* In-App PDF Preview Modal */}
       {activeModalMaterial && (
@@ -160,7 +206,7 @@ export const StudyMaterialsView: React.FC<StudyMaterialsViewProps> = ({
 
             <div className="bg-blueprint-dark text-slate-200 p-4 rounded-lg font-mono text-xs space-y-3">
               <div className="text-sky-400 font-bold border-b border-slate-700 pb-1">
-                ENGINEERING OFFICER BY SP — REFERENCE EXCERPT
+                ENGINEERING OFFICER BY MH — REFERENCE EXCERPT
               </div>
               <ul className="space-y-2">
                 {activeModalMaterial.highlights.map((h, i) => (
@@ -179,16 +225,17 @@ export const StudyMaterialsView: React.FC<StudyMaterialsViewProps> = ({
             <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-200">
               <button
                 onClick={() => setActiveModalMaterial(null)}
-                className="px-4 py-2 rounded-lg border border-slate-200 text-slate-700 text-xs font-semibold"
+                className="px-4 py-2 rounded-lg border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50"
               >
                 Close Preview
               </button>
               <button
                 onClick={() => {
-                  alert(`Downloading ${activeModalMaterial.title}...`);
+                  const m = activeModalMaterial;
                   setActiveModalMaterial(null);
+                  handleDownload(m);
                 }}
-                className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center space-x-1"
+                className="px-4 py-2 rounded-lg bg-sky-700 hover:bg-sky-600 text-white text-xs font-bold flex items-center space-x-1 shadow-xs transition-colors"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Download Complete PDF</span>

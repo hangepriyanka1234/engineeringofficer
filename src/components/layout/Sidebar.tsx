@@ -16,6 +16,7 @@ import {
   Bell,
   Headphones,
   Shield,
+  ShieldCheck,
   Award,
   HardHat,
   Compass,
@@ -27,7 +28,8 @@ import {
   Layers,
   Sparkles,
   Trophy,
-  Gift
+  Gift,
+  Building2
 } from 'lucide-react';
 import { StudentProfile } from '../../types';
 
@@ -37,6 +39,7 @@ interface SidebarProps {
   profile: StudentProfile;
   isAdmin: boolean;
   setIsAdmin: (isAdmin: boolean) => void;
+  onOpenComplianceModal?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -45,9 +48,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   profile,
   isAdmin,
   setIsAdmin,
+  onOpenComplianceModal,
 }) => {
   const studentNavItems = [
     { id: 'dashboard', label: 'Home / Dashboard', icon: LayoutDashboard, badge: undefined },
+    { id: 'pyqs', label: 'Exam & Question Paper Hub', icon: History, badge: '2011-25' },
     { id: 'daily-capsule', label: 'Daily Civil Capsule', icon: Sparkles, badge: 'Daily' },
     { id: 'exam-ecosystem', label: 'Target Exam Engine', icon: Compass, badge: 'Multi-Exam' },
     { id: 'study-planner', label: 'Study Planner & Tasks', icon: Calendar, badge: 'Adaptive' },
@@ -61,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'mistakes', label: 'Mistake Notebook', icon: AlertOctagon, badge: 'Smart' },
     { id: 'spaced-revision', label: 'Spaced Repetition', icon: RotateCcw, badge: 'SM-2' },
     { id: 'gamification', label: 'State Rankings & Badges', icon: Trophy, badge: 'Leaderboard' },
-    { id: 'pyqs', label: 'Previous Year Papers', icon: History, badge: '2015-24' },
+    { id: 'ebooks-notes', label: 'ई-बुक्स आणि ई-नोट्स', icon: BookOpen, badge: 'Pro Reader' },
     { id: 'notices', label: 'Current Recruitment', icon: Briefcase, badge: 'Official' },
     { id: 'materials', label: 'Study Materials & IS Codes', icon: FileText, badge: 'IS 456' },
     { id: 'analytics', label: 'Performance Analytics', icon: BarChart3, badge: undefined },
@@ -132,16 +137,55 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           );
         })}
+        {/* Play Store Compliance & Policy Link */}
+        {onOpenComplianceModal && (
+          <div className="pt-2">
+            <button
+              onClick={onOpenComplianceModal}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold text-emerald-300 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-500/30 transition-all cursor-pointer shadow-xs"
+            >
+              <div className="flex items-center space-x-2 truncate">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span className="truncate">प्ले स्टोअर धोरण व गोपनीयता</span>
+              </div>
+              <span className="text-[9px] px-1.5 py-0.2 rounded font-bold uppercase bg-emerald-900 text-emerald-200 border border-emerald-400/30">
+                100% OK
+              </span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Footer / Brand accreditation */}
-      <div className="p-3 border-t border-slate-800 bg-slate-950/60">
-        <div className="flex items-center space-x-2 text-[11px] text-slate-400">
-          <HardHat className="w-4 h-4 text-sky-400 shrink-0" />
-          <div className="leading-tight">
-            <span className="font-bold text-slate-200">SP Engineering Academy</span>
-            <p className="text-[10px] text-slate-400">Govt Civil Officer Guidance</p>
+      {/* Footer / Merchant accreditation */}
+      <div className="p-3 border-t border-slate-800 bg-slate-950/80 space-y-2">
+        <div className="flex items-center space-x-2 text-[11px] text-slate-300">
+          <Building2 className="w-4 h-4 text-sky-400 shrink-0" />
+          <div className="leading-tight truncate">
+            <span className="font-bold text-white block truncate text-[11px]">PRIME MULTI SERVICES</span>
+            <p className="text-[9px] text-slate-400 font-mono">Shop Act & Udyam Regd</p>
           </div>
+        </div>
+        <div className="flex items-center justify-between text-[10px] text-sky-400 pt-1 border-t border-slate-800/80">
+          <button
+            onClick={() => setActiveView('privacy-policy')}
+            className="hover:text-white underline cursor-pointer"
+          >
+            गोपनीयता
+          </button>
+          <span className="text-slate-600">·</span>
+          <button
+            onClick={() => setActiveView('terms-conditions')}
+            className="hover:text-white underline cursor-pointer"
+          >
+            नियम
+          </button>
+          <span className="text-slate-600">·</span>
+          <button
+            onClick={() => setActiveView('refund-policy')}
+            className="hover:text-white underline cursor-pointer"
+          >
+            रिफंड
+          </button>
         </div>
       </div>
     </aside>

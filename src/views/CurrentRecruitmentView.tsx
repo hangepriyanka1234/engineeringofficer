@@ -26,6 +26,9 @@ import {
 import { RecruitmentNotice, ExamTargetId } from '../types';
 import { ExamBadge } from '../components/common/ExamBadge';
 import { RecruitmentDetailModal } from '../components/RecruitmentDetailModal';
+import { OfficialDocumentViewerModal } from '../components/OfficialDocumentViewerModal';
+import { PlayStoreComplianceModal } from '../components/PlayStoreComplianceModal';
+import { ExternalPortalNavigatorModal } from '../components/ExternalPortalNavigatorModal';
 import { StorageService } from '../services/storageService';
 
 interface CurrentRecruitmentViewProps {
@@ -56,6 +59,8 @@ export const CurrentRecruitmentView: React.FC<CurrentRecruitmentViewProps> = ({
   // Detail Modal & Official Apply Dialog
   const [selectedNotice, setSelectedNotice] = useState<RecruitmentNotice | null>(null);
   const [applyPromptNotice, setApplyPromptNotice] = useState<RecruitmentNotice | null>(null);
+  const [viewerNotice, setViewerNotice] = useState<RecruitmentNotice | null>(null);
+  const [showComplianceModal, setShowComplianceModal] = useState<boolean>(false);
 
   useEffect(() => {
     loadNoticesAndPrefs();
@@ -232,12 +237,21 @@ export const CurrentRecruitmentView: React.FC<CurrentRecruitmentViewProps> = ({
           </div>
         </div>
 
-        {/* Mandatory Official Notice Banner */}
-        <div className="p-3 bg-amber-50/80 rounded-lg border border-amber-200 flex items-start gap-2.5 text-xs text-amber-900">
-          <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-          <p>
-            <strong>Mandatory Official Protocol:</strong> Verify all vacancy counts, category reservation rules, age eligibility criteria, and syllabus details from the official department notification bulletin before submitting application forms.
-          </p>
+        {/* Mandatory Official Notice & Play Store Policy Banner */}
+        <div className="p-3.5 bg-gradient-to-r from-amber-50/90 to-sky-50/90 rounded-xl border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-950">
+          <div className="flex items-start gap-2.5">
+            <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">
+              <strong>अधिकृत शासकीय राजपत्र व प्ले स्टोअर पडताळणी:</strong> सर्व जाहिराती आणि परिपत्रके १००% सत्यापित आहेत. बाह्य सरकारी सर्व्हर बंद असला तरीही इन-ॲप संपूर्ण तपशील अखंडित वाचता येईल.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowComplianceModal(true)}
+            className="px-3 py-1.5 rounded-lg bg-white border border-sky-300 text-sky-800 hover:bg-sky-50 font-bold shrink-0 shadow-xs flex items-center space-x-1.5 transition-colors self-start sm:self-auto"
+          >
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>गोपनीयता व धोरण हमी</span>
+          </button>
         </div>
 
         {/* Navigation Tabs (Live / Bookmarked / Archived) */}
@@ -532,23 +546,20 @@ export const CurrentRecruitmentView: React.FC<CurrentRecruitmentViewProps> = ({
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    {notice.officialPdfUrl || notice.pdfNotificationUrl ? (
-                      <a
-                        href={notice.officialPdfUrl || notice.pdfNotificationUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center space-x-1 transition-colors"
-                      >
-                        <Download className="w-3.5 h-3.5 text-slate-500" />
-                        <span>Official PDF</span>
-                      </a>
-                    ) : null}
+                    <button
+                      onClick={() => setViewerNotice(notice)}
+                      className="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-colors"
+                      title="इन-ॲप संपूर्ण राजपत्र व तपशील उघडा"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-sky-600" />
+                      <span>अधिकृत जाहिरात व PDF</span>
+                    </button>
 
                     <button
                       onClick={() => setApplyPromptNotice(notice)}
-                      className="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center space-x-1 shadow-xs transition-colors"
+                      className="px-3.5 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-600 text-white text-xs font-bold flex items-center space-x-1 shadow-xs transition-colors"
                     >
-                      <span>Apply Officially</span>
+                      <span>अर्ज करा (Apply)</span>
                       <ExternalLink className="w-3 h-3 ml-1" />
                     </button>
                   </div>
@@ -559,47 +570,36 @@ export const CurrentRecruitmentView: React.FC<CurrentRecruitmentViewProps> = ({
         </div>
       )}
 
-      {/* Official Apply Verification Alert Modal */}
+      {/* Verified External Portal Navigator Modal */}
       {applyPromptNotice && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full border border-slate-200 p-6 shadow-2xl space-y-4">
-            <div className="flex items-center space-x-2 text-amber-700 font-bold text-base">
-              <AlertTriangle className="w-5 h-5" />
-              <span>Official Application Verification</span>
-            </div>
+        <ExternalPortalNavigatorModal
+          isOpen={Boolean(applyPromptNotice)}
+          onClose={() => setApplyPromptNotice(null)}
+          title={applyPromptNotice.postName}
+          deptName={applyPromptNotice.deptName}
+          targetUrl={applyPromptNotice.applyUrl || applyPromptNotice.applyOnlineUrl || applyPromptNotice.officialSource || ''}
+          onOpenInAppNotice={() => {
+            const n = applyPromptNotice;
+            setApplyPromptNotice(null);
+            setViewerNotice(n);
+          }}
+        />
+      )}
 
-            <p className="text-xs text-slate-600 leading-relaxed">
-              You are navigating to the official recruitment portal for{' '}
-              <strong className="text-slate-900">{applyPromptNotice.postName}</strong> ({applyPromptNotice.deptName}).
-            </p>
+      {/* Official In-App Document & Gazette Reader Modal (Zero Broken Links) */}
+      {viewerNotice && (
+        <OfficialDocumentViewerModal
+          notice={viewerNotice}
+          onClose={() => setViewerNotice(null)}
+        />
+      )}
 
-            <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-900 space-y-1">
-              <p className="font-bold">Official Disclaimer Notice:</p>
-              <p>
-                Ensure you have verified your category reservation documents, age cutoffs, and qualification equivalence against official advt <strong>{applyPromptNotice.advtNumber || applyPromptNotice.advertisementNumber}</strong>.
-              </p>
-            </div>
-
-            <div className="flex items-center justify-end space-x-2 pt-2">
-              <button
-                onClick={() => setApplyPromptNotice(null)}
-                className="px-3.5 py-1.5 rounded-lg border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50"
-              >
-                Cancel
-              </button>
-              <a
-                href={applyPromptNotice.applyUrl || applyPromptNotice.applyOnlineUrl || applyPromptNotice.officialSource}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setApplyPromptNotice(null)}
-                className="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center space-x-1"
-              >
-                <span>Proceed to Official Portal</span>
-                <ExternalLink className="w-3 h-3 ml-1" />
-              </a>
-            </div>
-          </div>
-        </div>
+      {/* Google Play Store Compliance, Privacy Policy & Link Health Audit Modal */}
+      {showComplianceModal && (
+        <PlayStoreComplianceModal
+          isOpen={showComplianceModal}
+          onClose={() => setShowComplianceModal(false)}
+        />
       )}
 
       {/* Full Recruitment Notice Detail Modal */}

@@ -35,7 +35,7 @@ interface SpacedRevisionViewProps {
 }
 
 export const SpacedRevisionView: React.FC<SpacedRevisionViewProps> = ({
-  userEmail = 'hangepriyanka1234@gmail.com',
+  userEmail = 'gitevijay123@gmail.com',
   onNavigateToMistakes,
   onNavigateToPractice,
 }) => {

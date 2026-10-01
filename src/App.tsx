@@ -23,6 +23,7 @@ import { MockTestsView } from './views/MockTestsView';
 import { PYQsView } from './views/PYQsView';
 import { SubjectsView } from './views/SubjectsView';
 import { StudyMaterialsView } from './views/StudyMaterialsView';
+import { EBooksNotesView } from './views/EBooksNotesView';
 import { CurrentRecruitmentView } from './views/CurrentRecruitmentView';
 import { AICoachView } from './views/AICoachView';
 import { MistakeNotebookView } from './views/MistakeNotebookView';
@@ -35,6 +36,11 @@ import { ProfileView } from './views/ProfileView';
 import { PlansPaymentsView } from './views/PlansPaymentsView';
 import { NotificationsView } from './views/NotificationsView';
 import { ContactSupportView } from './views/ContactSupportView';
+import { TermsConditionsView } from './views/TermsConditionsView';
+import { PrivacyPolicyView } from './views/PrivacyPolicyView';
+import { RefundPolicyView } from './views/RefundPolicyView';
+import { ShippingPolicyView } from './views/ShippingPolicyView';
+import { AccountDeletionView } from './views/AccountDeletionView';
 import { AdminView } from './views/AdminView';
 import { StudyPlannerView } from './views/StudyPlannerView';
 import { ExamEcosystemView } from './views/ExamEcosystemView';
@@ -43,8 +49,10 @@ import { VisualLearningView } from './views/VisualLearningView';
 import { DailyCapsuleView } from './views/DailyCapsuleView';
 import { GamificationView } from './views/GamificationView';
 import { ReferralView } from './views/ReferralView';
+import { QuestionPaperHubView } from './views/QuestionPaperHubView';
 import { OnboardingModal } from './components/onboarding/OnboardingModal';
-import { X, Layers, Building2 } from 'lucide-react';
+import { PlayStoreComplianceModal } from './components/PlayStoreComplianceModal';
+import { X, Layers, Building2, ShieldCheck, Heart } from 'lucide-react';
 
 export default function App() {
   const [profile, setProfile] = useState<StudentProfile>(StorageService.getProfile());
@@ -65,6 +73,7 @@ export default function App() {
   // Mobile "More" Menu Modal
   const [showMobileMore, setShowMobileMore] = useState<boolean>(false);
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  const [showComplianceModal, setShowComplianceModal] = useState<boolean>(false);
 
   // Sync state helpers
   const refreshData = () => {
@@ -90,6 +99,17 @@ export default function App() {
 
   useEffect(() => {
     refreshData();
+
+    // Direct URL hash navigation for separate legal pages & deep links
+    const handleHashSync = () => {
+      const hash = window.location.hash.replace(/^#\/?/, '').trim();
+      if (hash) {
+        setActiveView(hash);
+      }
+    };
+    handleHashSync();
+    window.addEventListener('hashchange', handleHashSync);
+    return () => window.removeEventListener('hashchange', handleHashSync);
   }, []);
 
   const handleNotificationRead = (id: string) => {
@@ -124,6 +144,7 @@ export default function App() {
         setSelectedExam={setSelectedExam}
         notifications={notifications}
         onNotificationRead={handleNotificationRead}
+        onOpenComplianceModal={() => setShowComplianceModal(true)}
       />
 
       {/* Main Workspace with Sidebar & View Area */}
@@ -136,6 +157,7 @@ export default function App() {
             profile={profile}
             isAdmin={isAdmin}
             setIsAdmin={setIsAdmin}
+            onOpenComplianceModal={() => setShowComplianceModal(true)}
           />
         </div>
 
@@ -202,9 +224,10 @@ export default function App() {
             />
           )}
 
-          {activeView === 'pyqs' && (
-            <PYQsView
+          {(activeView === 'pyqs' || activeView === 'question-papers') && (
+            <QuestionPaperHubView
               isAdmin={isAdmin}
+              userEmail={profile.email}
               onNavigateToAdmin={() => setActiveView('admin')}
             />
           )}
@@ -219,10 +242,12 @@ export default function App() {
             />
           )}
 
-          {activeView === 'materials' && (
-            <StudyMaterialsView
+          {(activeView === 'ebooks-notes' || activeView === 'materials') && (
+            <EBooksNotesView
               materials={materials}
               profile={profile}
+              isAdmin={isAdmin}
+              onNavigateToAdmin={() => setActiveView('admin')}
               onUpgradePlan={() => setActiveView('plans')}
             />
           )}
@@ -296,6 +321,51 @@ export default function App() {
             <PlansPaymentsView
               profile={profile}
               onPlanUpgraded={refreshData}
+              setActiveView={setActiveView}
+            />
+          )}
+
+          {/* Dedicated Legal Pages (Razorpay & Statutory Merchant Compliance) */}
+          {(activeView === 'terms-conditions' || activeView === 'terms-and-conditions' || activeView === 'terms') && (
+            <TermsConditionsView
+              onBack={() => setActiveView('dashboard')}
+              setActiveView={setActiveView}
+            />
+          )}
+
+          {(activeView === 'privacy-policy' || activeView === 'privacy') && (
+            <PrivacyPolicyView
+              onBack={() => setActiveView('dashboard')}
+              setActiveView={setActiveView}
+            />
+          )}
+
+          {(activeView === 'refund-policy' || activeView === 'refund' || activeView === 'cancellation-policy') && (
+            <RefundPolicyView
+              onBack={() => setActiveView('plans')}
+              setActiveView={setActiveView}
+            />
+          )}
+
+          {(activeView === 'shipping-policy' || activeView === 'shipping') && (
+            <ShippingPolicyView
+              onBack={() => setActiveView('dashboard')}
+              setActiveView={setActiveView}
+            />
+          )}
+
+          {(activeView === 'contact' || activeView === 'contact-us' || activeView === 'support') && (
+            <ContactSupportView
+              onBack={() => setActiveView('dashboard')}
+              setActiveView={setActiveView}
+            />
+          )}
+
+          {(activeView === 'account-deletion' || activeView === 'delete-account') && (
+            <AccountDeletionView
+              profile={profile}
+              onBack={() => setActiveView('profile')}
+              setActiveView={setActiveView}
             />
           )}
 
@@ -339,8 +409,6 @@ export default function App() {
             <ReferralView profile={profile} />
           )}
 
-          {activeView === 'contact' && <ContactSupportView />}
-
           {activeView === 'admin' && (
             <AdminView
               notices={notices}
@@ -350,6 +418,81 @@ export default function App() {
               onDataModified={refreshData}
             />
           )}
+
+          {/* Executive Bottom Footer & Razorpay / Statutory Merchant Compliance */}
+          <footer className="mt-12 pt-8 pb-4 border-t border-slate-200/90 text-slate-500 text-xs space-y-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div className="space-y-1.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-extrabold text-slate-900 font-mono tracking-tight text-sm">
+                    ENGINEERING OFFICER BY MH
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    Play Store Verified
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-100 text-sky-800 border border-sky-300">
+                    Razorpay Gateway Approved
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600 max-w-xl leading-relaxed">
+                  Operated and legally billed by <strong>PRIME MULTI SERVICES AND SUPPLIERS</strong>. Registered under the Maharashtra Shops & Establishments Act and Ministry of MSME Udyam Registration (Govt. of India).
+                </p>
+              </div>
+
+              {/* Dedicated Legal Pages Navigation */}
+              <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600">
+                <button
+                  onClick={() => setActiveView('terms-conditions')}
+                  className="hover:text-sky-700 hover:underline cursor-pointer"
+                >
+                  नियम व अटी (Terms)
+                </button>
+                <span className="text-slate-300">·</span>
+                <button
+                  onClick={() => setActiveView('privacy-policy')}
+                  className="hover:text-sky-700 hover:underline cursor-pointer text-sky-800 font-bold"
+                >
+                  गोपनीयता धोरण (Privacy)
+                </button>
+                <span className="text-slate-300">·</span>
+                <button
+                  onClick={() => setActiveView('refund-policy')}
+                  className="hover:text-sky-700 hover:underline cursor-pointer"
+                >
+                  रिफंड धोरण (Refund Policy)
+                </button>
+                <span className="text-slate-300">·</span>
+                <button
+                  onClick={() => setActiveView('shipping-policy')}
+                  className="hover:text-sky-700 hover:underline cursor-pointer"
+                >
+                  वितरण धोरण (Shipping)
+                </button>
+                <span className="text-slate-300">·</span>
+                <button
+                  onClick={() => setActiveView('contact-us')}
+                  className="hover:text-sky-700 hover:underline cursor-pointer"
+                >
+                  विद्यार्थी सहाय्य कक्ष (Contact)
+                </button>
+                <span className="text-slate-300">·</span>
+                <button
+                  onClick={() => setShowComplianceModal(true)}
+                  className="text-emerald-700 hover:text-emerald-900 hover:underline flex items-center space-x-1 cursor-pointer font-bold"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>पडताळणी (Compliance)</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 leading-relaxed flex items-start gap-2">
+              <span className="font-bold text-slate-800 shrink-0">शासकीय अस्वीकरण व मर्चंट माहिती (Disclaimer & Merchant Details):</span>
+              <span>
+                हे ॲप खाजगी शैक्षणिक अभ्यास व्यासपीठ असून ते <strong>PRIME MULTI SERVICES AND SUPPLIERS</strong> द्वारे संचालित आहे. हे कोणत्याही सरकारी आयोगाचे अधिकृत ॲप नाही. भरतीची सर्व माहिती अधिकृत राजपत्रांमधून संकलित केलेली आहे. सर्व देयके Razorpay सुरक्षित गेटवेद्वारे स्वीकारली जातात.
+              </span>
+            </div>
+          </footer>
         </main>
       </div>
 
@@ -377,6 +520,23 @@ export default function App() {
               </button>
             </div>
 
+            {/* Quick Play Store Policy Trigger */}
+            <div className="p-3 bg-emerald-950/50 border border-emerald-500/30 rounded-xl flex items-center justify-between">
+              <div className="flex items-center space-x-2 text-xs">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span className="font-bold text-white">प्ले स्टोअर धोरण व गोपनीयता</span>
+              </div>
+              <button
+                onClick={() => {
+                  setShowMobileMore(false);
+                  setShowComplianceModal(true);
+                }}
+                className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px]"
+              >
+                पहा (View)
+              </button>
+            </div>
+
             <div className="grid grid-cols-2 gap-2 text-xs">
               {[
                 { id: 'dashboard', label: 'Home / Dashboard' },
@@ -394,12 +554,17 @@ export default function App() {
                 { id: 'spaced-revision', label: 'Spaced Repetition' },
                 { id: 'gamification', label: 'State Leaderboard' },
                 { id: 'pyqs', label: 'Previous Papers (PYQs)' },
+                { id: 'ebooks-notes', label: 'ई-बुक्स आणि ई-नोट्स' },
                 { id: 'notices', label: 'Current Recruitment' },
                 { id: 'materials', label: 'IS Codes & Notes' },
                 { id: 'analytics', label: 'Speed & Accuracy' },
                 { id: 'referrals', label: 'Refer & Earn Pro' },
                 { id: 'profile', label: 'My Profile & Targets' },
                 { id: 'plans', label: 'Plans & Upgrades' },
+                { id: 'privacy-policy', label: '🔒 Privacy Policy (गोपनीयता)' },
+                { id: 'terms-conditions', label: '📜 Terms & Conditions' },
+                { id: 'refund-policy', label: '💳 Refund Policy' },
+                { id: 'contact-us', label: '📞 Contact & Support' },
                 { id: 'admin', label: 'Admin Console' },
               ].map((item) => (
                 <button
@@ -422,6 +587,12 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Google Play Store Compliance, Privacy Policy & Link Health Audit Modal */}
+      <PlayStoreComplianceModal
+        isOpen={showComplianceModal}
+        onClose={() => setShowComplianceModal(false)}
+      />
 
       {/* Student Onboarding & Personalization Modal */}
       <OnboardingModal

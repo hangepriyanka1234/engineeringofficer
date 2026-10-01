@@ -13,7 +13,10 @@ export type ExamTargetId =
   | 'housing_infra'
   | 'road_transport'
   | 'state_je_ae'
-  | 'psu_central';
+  | 'psu_central'
+  | 'maha_cea'
+  | 'mahatransco_civil'
+  | string;
 
 export interface ExamCatalogueItem {
   id: ExamTargetId | string;
@@ -733,13 +736,31 @@ export interface PYQPaper {
   pdfUrl?: string;
   hasCbtMode: boolean;
   questionIds: string[];
+  conductingBody?: string;
+  officialBookletSeries?: string[];
+  officialGazetteNotice?: string;
+  cutoffScore?: number;
+  categoryCutoffs?: {
+    open: number;
+    obc: number;
+    ews: number;
+    sc: number;
+    st: number;
+    female: number;
+  };
+  negativeMarkRatio?: number;
+  marksPerQuestion?: number;
+  subjectBreakdown?: { subject: string; count: number }[];
+  officialInstructions?: string[];
+  keyHighlights?: string[];
+  isLatestPattern?: boolean;
 }
 
 export interface StudyMaterial {
   id: string;
   title: string;
   subjectId: SubjectId;
-  type: 'formula_sheet' | 'is_code_summary' | 'short_notes' | 'standard_chart';
+  type: 'formula_sheet' | 'is_code_summary' | 'short_notes' | 'standard_chart' | 'ebook' | 'topper_handwritten_notes' | 'mindmap';
   pages: number;
   fileSize: string;
   isFree: boolean;
@@ -747,6 +768,17 @@ export interface StudyMaterial {
   downloadCount: number;
   publishedDate: string;
   contentMarkdown?: string;
+  author?: string;
+  fileUrl?: string;
+  readTimeMinutes?: number;
+  chapters?: {
+    id: string;
+    title: string;
+    page: number;
+    summary: string;
+    content?: string;
+    formulas?: string[];
+  }[];
 }
 
 export interface RecruitmentNotice {

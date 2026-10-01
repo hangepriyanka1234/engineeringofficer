@@ -6,7 +6,7 @@ import {
 } from '../types';
 
 export const SpacedRevisionService = {
-  async getQueues(userEmail = 'hangepriyanka1234@gmail.com'): Promise<SpacedQueueGroup | null> {
+  async getQueues(userEmail = 'gitevijay123@gmail.com'): Promise<SpacedQueueGroup | null> {
     try {
       const res = await fetch(`/api/revision/queues?userEmail=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
@@ -57,7 +57,7 @@ export const SpacedRevisionService = {
       confidence: ConfidenceLevel;
       timeSpentSeconds?: number;
     }>,
-    userEmail = 'hangepriyanka1234@gmail.com'
+    userEmail = 'gitevijay123@gmail.com'
   ) {
     try {
       const res = await fetch('/api/revision/bulk-retest', {
@@ -72,7 +72,7 @@ export const SpacedRevisionService = {
     }
   },
 
-  async rescheduleOverdue(userEmail = 'hangepriyanka1234@gmail.com') {
+  async rescheduleOverdue(userEmail = 'gitevijay123@gmail.com') {
     try {
       const res = await fetch('/api/revision/reschedule-overdue', {
         method: 'POST',
