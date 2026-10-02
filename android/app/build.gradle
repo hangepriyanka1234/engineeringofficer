@@ -17,12 +17,39 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            def keystoreFile = file("engineering-officer.keystore")
+            if (!keystoreFile.exists()) {
+                keystoreFile = file("../engineering-officer.keystore")
+            }
+            if (keystoreFile.exists()) {
+                storeFile keystoreFile
+                storePassword System.getenv("KEYSTORE_PASSWORD") ?: "engineering2026"
+                keyAlias System.getenv("KEY_ALIAS") ?: "engineering-officer-bymh-key"
+                keyPassword System.getenv("KEY_PASSWORD") ?: "engineering2026"
+            }
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+        force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22'
+        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+    }
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
 }
 
 repositories {
@@ -36,6 +63,19 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-ktx:$androidxCoreVersion"
+
+    // Fix for Kotlin stdlib duplicate classes
+    implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.22')
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22") {
+            because("kotlin-stdlib-jdk7 is now merged into kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22") {
+            because("kotlin-stdlib-jdk8 is now merged into kotlin-stdlib")
+        }
+    }
 }
 
 try {

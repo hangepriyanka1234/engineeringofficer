@@ -61,24 +61,237 @@ jobs:
           chmod +x gradlew || true
           cd ..
 
-      - name: 🔑 Build Release App Bundle (.AAB) using Gradle
+      - name: 🔧 Resolve Kotlin Duplicate Classes & Gradle Compatibility
+        run: |
+          echo "Applying Kotlin stdlib duplicate classes prevention..."
+          # Update android/gradle.properties
+          cat << 'EOF' > android/gradle.properties
+          android.useAndroidX=true
+          android.enableJetifier=true
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          kotlin.stdlib.default.dependency=false
+          EOF
+
+          # Ensure android/build.gradle excludes duplicate kotlin-stdlib-jdk7/jdk8
+          cat << 'EOF' > android/build.gradle
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:8.2.1'
+              }
+          }
+
+          apply from: "variables.gradle"
+
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              configurations.all {
+                  resolutionStrategy {
+                      force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                      force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22'
+                      force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                      force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+                  }
+                  exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+                  exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+              }
+          }
+
+          task clean(type: Delete) {
+              delete rootProject.buildDir
+          }
+          EOF
+
+          # Ensure android/app/build.gradle has signing config and duplicate class resolution
+          cat << 'EOF' > android/app/build.gradle
+          apply plugin: 'com.android.application'
+
+          android {
+              namespace "com.engineeringofficer.bymh"
+              compileSdk rootProject.ext.compileSdkVersion
+
+              defaultConfig {
+                  applicationId "com.engineeringofficer.bymh"
+                  minSdkVersion rootProject.ext.minSdkVersion
+                  targetSdkVersion rootProject.ext.targetSdkVersion
+                  versionCode 1
+                  versionName "1.0.0"
+                  testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+                  aaptOptions {
+                       ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+                  }
+              }
+
+              signingConfigs {
+                  release {
+                      def keystoreFile = file("engineering-officer.keystore")
+                      if (!keystoreFile.exists()) {
+                          keystoreFile = file("../engineering-officer.keystore")
+                      }
+                      if (keystoreFile.exists()) {
+                          storeFile keystoreFile
+                          storePassword System.getenv("KEYSTORE_PASSWORD") ?: "engineering2026"
+                          keyAlias System.getenv("KEY_ALIAS") ?: "engineering-officer-bymh-key"
+                          keyPassword System.getenv("KEY_PASSWORD") ?: "engineering2026"
+                      }
+                  }
+              }
+
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                      minifyEnabled false
+                      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                  }
+              }
+          }
+
+          configurations.all {
+              resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+              }
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+          }
+
+          repositories {
+              flatDir {
+                  dirs 'libs'
+              }
+          }
+
+          dependencies {
+              implementation fileTree(dir: 'libs', include: ['*.jar'])
+              implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+              implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+              implementation "androidx.core:core-ktx:$androidxCoreVersion"
+
+              implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.22')
+              implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+
+              constraints {
+                  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22") {
+                      because("kotlin-stdlib-jdk7 is now merged into kotlin-stdlib")
+                  }
+                  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22") {
+                      because("kotlin-stdlib-jdk8 is now merged into kotlin-stdlib")
+                  }
+              }
+          }
+
+          try {
+              def servicesJSON = file('google-services.json')
+              if (servicesJSON.text) {
+                  apply plugin: 'com.google.gms.google-services'
+              }
+          } catch(Exception e) {
+              logger.info("google-services.json not found, google-services plugin not applied.")
+          }
+          EOF
+          echo "✅ Kotlin duplicate class resolution & Signing configuration successfully applied!"
+
+      - name: 🔑 Setup Google Play Official Signing Keystore
+        run: |
+          mkdir -p android/app
+          KEYSTORE_PATH="android/app/engineering-officer.keystore"
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "Decoding release keystore from GitHub Secret..."
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$KEYSTORE_PATH"
+          else
+            echo "Generating official release keystore for Engineering Officer BY MH..."
+            keytool -genkeypair \
+              -v \
+              -keystore "$KEYSTORE_PATH" \
+              -alias "engineering-officer-bymh-key" \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -storepass "engineering2026" \
+              -keypass "engineering2026" \
+              -dname "CN=Engineering Officer BY MH, OU=Civil Engineering, O=BY MH, L=Mumbai, ST=Maharashtra, C=IN"
+          fi
+          # Also copy to root android directory
+          cp "$KEYSTORE_PATH" android/engineering-officer.keystore
+
+          echo "=========================================================="
+          echo "🔑 Google Play Keystore Information:"
+          keytool -list -v -keystore "$KEYSTORE_PATH" -alias "engineering-officer-bymh-key" -storepass "engineering2026" | grep -E "SHA1:|SHA256:|Owner:|Valid from:"
+          echo "=========================================================="
+
+          # Save fingerprints for summary
+          SHA1=$(keytool -list -v -keystore "$KEYSTORE_PATH" -alias "engineering-officer-bymh-key" -storepass "engineering2026" | grep "SHA1:" | awk '{print $2}')
+          SHA256=$(keytool -list -v -keystore "$KEYSTORE_PATH" -alias "engineering-officer-bymh-key" -storepass "engineering2026" | grep "SHA256:" | awk '{print $2}')
+          echo "SHA1_FINGERPRINT=$SHA1" >> $GITHUB_ENV
+          echo "SHA256_FINGERPRINT=$SHA256" >> $GITHUB_ENV
+
+      - name: 🔨 Build Release App Bundle (.AAB) using Gradle
+        env:
+          KEYSTORE_PASSWORD: "engineering2026"
+          KEY_ALIAS: "engineering-officer-bymh-key"
+          KEY_PASSWORD: "engineering2026"
         run: |
           cd android
+          echo "Executing Gradle Release Build..."
           if [ -f "gradlew" ]; then
-            ./gradlew bundleRelease assembleRelease --no-daemon || ./gradlew assembleRelease --no-daemon
+            ./gradlew bundleRelease assembleRelease --no-daemon \
+              -Pandroid.injected.signing.store.file=engineering-officer.keystore \
+              -Pandroid.injected.signing.store.password=engineering2026 \
+              -Pandroid.injected.signing.key.alias=engineering-officer-bymh-key \
+              -Pandroid.injected.signing.key.password=engineering2026 || ./gradlew bundleRelease --no-daemon
           else
-            gradle bundleRelease assembleRelease --no-daemon || gradle assembleRelease --no-daemon
+            gradle bundleRelease assembleRelease --no-daemon || gradle bundleRelease --no-daemon
           fi
           cd ..
 
-      - name: 🔍 Verify Authentic Google Play App Bundle (.AAB)
+      - name: ✍️ Verify & Sign Android App Bundle (.AAB) with Keystore
         run: |
-          if ls android/app/build/outputs/bundle/*/*.aab 1> /dev/null 2>&1; then
-            echo "✅ Authentic Android App Bundle (.aab) verified!"
+          AAB_FILE=$(find android/app/build/outputs/bundle -name "*.aab" | head -n 1)
+          if [ -n "$AAB_FILE" ]; then
+            echo "Target AAB found: $AAB_FILE"
+            if jarsigner -verify "$AAB_FILE" 2>&1 | grep -q "jar verified"; then
+              echo "✅ Android App Bundle is verified and signed by Gradle!"
+            else
+              echo "Signing $AAB_FILE with jarsigner..."
+              jarsigner -verbose \
+                -sigalg SHA256withRSA \
+                -digestalg SHA-256 \
+                -keystore android/app/engineering-officer.keystore \
+                -storepass "engineering2026" \
+                -keypass "engineering2026" \
+                "$AAB_FILE" \
+                "engineering-officer-bymh-key"
+              jarsigner -verify "$AAB_FILE"
+              echo "✅ AAB successfully signed with official keystore!"
+            fi
           else
-            echo "ℹ️ Checking build outputs directory:"
-            ls -R android/app/build/outputs/ || true
+            echo "⚠️ No .aab found to verify in bundle output directory."
           fi
+
+          APK_FILE=$(find android/app/build/outputs/apk -name "*release*.apk" 2>/dev/null | head -n 1)
+          if [ -n "$APK_FILE" ]; then
+            echo "Signing release APK: $APK_FILE"
+            jarsigner -keystore android/app/engineering-officer.keystore \
+              -storepass "engineering2026" \
+              -keypass "engineering2026" \
+              "$APK_FILE" \
+              "engineering-officer-bymh-key" || true
+          fi
+
+      - name: 🔍 Verify Final Build Outputs
+        run: |
+          echo "Listing Bundle (.aab) outputs:"
+          ls -la android/app/build/outputs/bundle/*/* 2>/dev/null || true
+          echo "Listing APK outputs:"
+          ls -la android/app/build/outputs/apk/*/* 2>/dev/null || true
 
       - name: 📤 Upload Google Play Store Bundle (.AAB) Artifact
         uses: actions/upload-artifact@v4
@@ -96,13 +309,34 @@ jobs:
             android/app/build/outputs/apk/**/*.apk
           if-no-files-found: warn
 
-      - name: ✅ Build Summary & Play Console Next Steps
+      - name: 🔐 Backup Official Release Keystore Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Engineering-Officer-Signing-Keystore
+          path: android/app/engineering-officer.keystore
+          if-no-files-found: warn
+
+      - name: 📋 Generate GitHub Actions Summary
         run: |
-          echo "=========================================================="
-          echo " 🎉 Android App Bundle (.aab) Build Complete for BY MH!"
-          echo " App Name: Engineering Officer BY MH"
-          echo " Package Name: com.engineeringofficer.bymh"
-          echo " Target SDK: Android 14 (API Level 34+)"
-          echo " Universal AAB: ARM64, ARMv7, x86_64"
-          echo " Upload this .aab file to Google Play Console -> Production"
-          echo "=========================================================="
+          cat << EOF >> $GITHUB_STEP_SUMMARY
+          # 🚀 Google Play Release Build Complete!
+
+          ### 📦 Application Details
+          - **App Name:** Engineering Officer BY MH
+          - **Package Name (Application ID):** \`com.engineeringofficer.bymh\`
+          - **Target Android Version:** Android 14 (API 34)
+          - **Minimum Android Version:** Android 7.0 (API 24)
+
+          ### 🔑 Keystore Signing Details (RSA 2048-bit)
+          - **Keystore File:** \`engineering-officer.keystore\` (Downloaded from Artifacts)
+          - **Key Alias:** \`engineering-officer-bymh-key\`
+          - **Keystore Password:** \`engineering2026\`
+          - **Key Password:** \`engineering2026\`
+          - **SHA-1 Fingerprint:** \`${{ env.SHA1_FINGERPRINT }}\`
+          - **SHA-256 Fingerprint:** \`${{ env.SHA256_FINGERPRINT }}\`
+
+          ### 📲 Play Console Instructions
+          1. Download **\`Google-Play-Store-App-Bundle-AAB-BY-MH\`** (.aab) from the Artifacts below.
+          2. Open **Google Play Console** -> Create App -> Production -> Upload \`.aab\`.
+          3. Save your **\`Engineering-Officer-Signing-Keystore\`** safely for future updates!
+          EOF

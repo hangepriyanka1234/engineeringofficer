@@ -404,6 +404,34 @@ export const AdminGitHubPlayStoreManager: React.FC = () => {
             </div>
           </div>
 
+          <div className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+            <div className="text-[11px] font-bold text-slate-500 uppercase">Keystore / Key Password</div>
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-xs text-slate-800 font-semibold">engineering2026</span>
+              <button
+                onClick={() => handleCopy('engineering2026', 'pass')}
+                className="text-[11px] text-sky-600 hover:text-sky-800 flex items-center space-x-1"
+              >
+                <Copy className="w-3 h-3" />
+                <span>{copiedKey === 'pass' ? 'Copied!' : 'Copy'}</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+            <div className="text-[11px] font-bold text-slate-500 uppercase">Keystore File Name</div>
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-xs text-slate-800 font-semibold">engineering-officer.keystore</span>
+              <button
+                onClick={() => handleCopy('engineering-officer.keystore', 'keystore_file')}
+                className="text-[11px] text-sky-600 hover:text-sky-800 flex items-center space-x-1"
+              >
+                <Copy className="w-3 h-3" />
+                <span>{copiedKey === 'keystore_file' ? 'Copied!' : 'Copy'}</span>
+              </button>
+            </div>
+          </div>
+
           <div className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1 md:col-span-2">
             <div className="text-[11px] font-bold text-slate-500 uppercase">SHA-1 Certificate Fingerprint</div>
             <div className="flex items-center justify-between">
