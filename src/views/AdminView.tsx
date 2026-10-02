@@ -56,6 +56,7 @@ import { AdminSupabaseConnector } from '../components/AdminSupabaseConnector';
 import { AdminGitHubPlayStoreManager } from '../components/AdminGitHubPlayStoreManager';
 import { AdminFirebaseManager } from '../components/AdminFirebaseManager';
 import { AdminEBooksNotesManager } from '../components/AdminEBooksNotesManager';
+import { AdminAppIconStudio } from '../components/AdminAppIconStudio';
 import { QuestionPaperStudio } from '../components/admin/QuestionPaperStudio';
 
 interface AdminViewProps {
@@ -131,6 +132,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
         {[
           { id: 'question-paper-studio', label: '★ QUESTION PAPER STUDIO', icon: Sparkles, count: 'STUDIO' },
           { id: 'github-playstore', label: 'GitHub & Play Store (.AAB)', icon: Github, count: 'Play Store' },
+          { id: 'app-launcher-icon', label: '📱 App Icon (ic_launcher.png)', icon: Smartphone, count: 'Launcher' },
           { id: 'firebase', label: 'Firebase Architecture & Usage', icon: Flame, count: 'Cloud Active' },
           { id: 'supabase-realtime', label: 'Supabase Real-Time & Keep-Alive', icon: Database, count: '24/7 Active' },
           { id: 'payments', label: 'Razorpay & ₹299 Plans', icon: DollarSign, count: 'Live' },
@@ -178,6 +180,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
       {/* Tab 1: GitHub & Google Play Store (.AAB) Manager */}
       {activeTab === 'github-playstore' && (
         <AdminGitHubPlayStoreManager />
+      )}
+
+      {/* Tab: App Icon & Launcher Studio (ic_launcher.png) */}
+      {activeTab === 'app-launcher-icon' && (
+        <AdminAppIconStudio onNavigateToGitHub={() => setActiveTab('github-playstore')} />
       )}
 
       {/* Tab 2: Firebase Architecture & Service Usage Inspector */}

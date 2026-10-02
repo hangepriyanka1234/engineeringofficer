@@ -30,11 +30,45 @@ export const AdminGitHubPlayStoreManager: React.FC = () => {
   const [isPulling, setIsPulling] = useState(false);
   const [isPushing, setIsPushing] = useState(false);
   const [isBuildingAab, setIsBuildingAab] = useState(false);
+  const [iconVersion, setIconVersion] = useState(Date.now());
+  const [iconUploading, setIconUploading] = useState(false);
+  const iconFileInputRef = React.useRef<HTMLInputElement>(null);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'info' | 'error'; text: string } | null>({
     type: 'info',
     text: 'Repository connected: engineeringofficerapp/civil-prep. Ready for Git operations and Play Store .aab builds.',
   });
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const handleQuickIconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setIconUploading(true);
+      setStatusMessage(null);
+      try {
+        const reader = new FileReader();
+        reader.onload = async (evt) => {
+          const base64 = evt.target?.result as string;
+          const res = await fetch('/api/admin/app-icon/replace', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-admin-role': 'super_admin' },
+            body: JSON.stringify({ imageBase64: base64, fileName: file.name }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Failed to replace icon');
+          setIconVersion(Date.now());
+          setStatusMessage({
+            type: 'success',
+            text: `✅ ${data.message} आता खालील 'Git Push' बटणावर क्लिक करून बदल GitHub वर सेव्ह करा!`,
+          });
+          setIconUploading(false);
+        };
+        reader.readAsDataURL(file);
+      } catch (err: any) {
+        setStatusMessage({ type: 'error', text: `आयकॉन अपलोड अयशस्वी: ${err.message}` });
+        setIconUploading(false);
+      }
+    }
+  };
 
   const sha1Fingerprint = '9F:3B:58:22:74:10:8C:39:AA:F1:C0:7E:89:12:4D:33:9A:88:BB:50';
   const sha256Fingerprint = '48:D1:6C:3E:9A:2F:10:88:5C:B9:01:FE:23:44:E7:89:A2:15:33:6C:88:99:A1:00:DF:45:67:89:AB:CD:EF:12';
@@ -247,6 +281,81 @@ export const AdminGitHubPlayStoreManager: React.FC = () => {
             <Package className="w-3.5 h-3.5" />
             <span>{isBuildingAab ? 'Building AAB on GitHub...' : 'Generate Play Store .AAB Bundle'}</span>
           </button>
+        </div>
+      </div>
+
+      {/* Section: App Launcher Icon & Google Play Graphic (ic_launcher.png) */}
+      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center space-x-2">
+            <Smartphone className="w-5 h-5 text-indigo-600" />
+            <h3 className="text-sm font-bold text-slate-900">App Launcher Icon (ic_launcher.png) & Play Store Asset</h3>
+          </div>
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+            Android Mipmaps & 512×512 Master
+          </span>
+        </div>
+
+        <p className="text-xs text-slate-600 leading-relaxed">
+          Google Play Store आणि अँड्रॉइड डिव्हाइसवर दिसणारा ॲप आयकॉन तुम्ही थेट येथून रिप्लेस करू शकता. तुमच्याकडे असणारी <strong>ic_launcher.png</strong> फाईल निवडा, ती सर्व 5 Android Mipmap फोल्डर्समध्ये आपोआप स्केल होईल.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+          <div className="flex items-center space-x-4">
+            <div className="relative group">
+              <img
+                src={`/ic_launcher.png?v=${iconVersion}`}
+                alt="App Icon"
+                className="w-16 h-16 rounded-2xl shadow-md border-2 border-white object-cover bg-[#0F2744]"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/icon.svg';
+                }}
+              />
+              <span className="absolute -bottom-1 -right-1 px-1.5 py-0.2 bg-emerald-600 text-white text-[9px] font-bold rounded-full border border-white">
+                512px
+              </span>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-slate-800">सध्याचा सक्रिय आयकॉन: ic_launcher.png</div>
+              <div className="text-[11px] text-slate-500 font-mono mt-0.5">
+                Path: /public/ic_launcher.png & res/mipmap-*/
+              </div>
+              <div className="flex items-center space-x-2 mt-1">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">
+                  ✓ Square & Round Ready
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-semibold">
+                  ✓ .AAB Play Store Bundled
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
+            <input
+              ref={iconFileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="hidden"
+              onChange={handleQuickIconUpload}
+            />
+            <button
+              onClick={() => iconFileInputRef.current?.click()}
+              disabled={iconUploading}
+              className="flex-1 sm:flex-initial px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center justify-center space-x-2 transition-colors disabled:opacity-50 shadow-xs cursor-pointer"
+            >
+              <UploadCloud className="w-3.5 h-3.5" />
+              <span>{iconUploading ? 'रिप्लेस होत आहे...' : 'नवीन ic_launcher.png निवडा'}</span>
+            </button>
+            <a
+              href="/ic_launcher.png"
+              download="ic_launcher.png"
+              className="p-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center transition-colors"
+              title="डाउनलोड करा"
+            >
+              <Download className="w-3.5 h-3.5" />
+            </a>
+          </div>
         </div>
       </div>
 

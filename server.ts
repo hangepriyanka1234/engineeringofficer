@@ -28,6 +28,7 @@ import { ServerAdminOperationsEngine } from "./server/adminOperationsEngine";
 import { ServerLoadTestEngine } from "./server/loadTestEngine";
 import { ServerQuestionBankEngine } from "./server/questionBankEngine";
 import { ServerSupabaseEngine } from "./server/supabaseEngine";
+import { ServerAppIconEngine } from "./server/appIconEngine";
 import { requireAdminAuth } from "./server/adminAuthMiddleware";
 import { LegalPagesEngine } from "./server/legalPagesEngine";
 
@@ -1941,6 +1942,41 @@ app.post("/api/admin/run-load-test", (_req: Request, res: Response) => {
     res.status(500).json({ error: "Load test execution failed" });
   }
 });
+
+// ==========================================
+// APP LAUNCHER ICON & BRANDING STUDIO APIs (ic_launcher.png)
+// ==========================================
+app.get("/api/admin/app-icon/status", (_req: Request, res: Response) => {
+  try {
+    const status = ServerAppIconEngine.getIconStatus();
+    res.json(status);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || "Failed to fetch icon status" });
+  }
+});
+
+app.post("/api/admin/app-icon/replace", async (req: Request, res: Response) => {
+  try {
+    const { imageBase64, fileName } = req.body;
+    if (!imageBase64) {
+      return res.status(400).json({ error: "imageBase64 payload is required" });
+    }
+    const result = await ServerAppIconEngine.replaceIcon(imageBase64, fileName || "ic_launcher.png");
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || "Failed to replace app icon" });
+  }
+});
+
+app.post("/api/admin/app-icon/reset", async (_req: Request, res: Response) => {
+  try {
+    const result = await ServerAppIconEngine.resetToDefault();
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || "Failed to reset app icon" });
+  }
+});
+
 
 // ==========================================
 // 20,000+ QUESTION BANK & BULK IMPORT APIs
